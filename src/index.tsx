@@ -1,14 +1,43 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { Route, Switch } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import Space from "./components/Space";
+import Store from "./components/Store";
+import Home from "./components/Home";
+
+const THEME = createMuiTheme({
+  typography: {
+    fontFamily: `'Open Sans', "Asap", "Roboto", "Helvetica", "Arial", sans-serif`,
+    fontSize: 10,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 600,
+  },
+  palette: {
+    primary: {
+      main: "#2F89FC",
+    },
+    secondary: {
+      main: "#6B7688",
+    },
+  },
+});
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <MuiThemeProvider theme={THEME}>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/space" component={Space} />
+        <Route path="/store/:id" component={Store} />
+        <Route path="/" component={Home} />
+      </Switch>
+    </BrowserRouter>
+  </MuiThemeProvider>,
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

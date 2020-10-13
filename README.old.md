@@ -1,1 +1,0 @@
-# decentramall-frontend
