@@ -1,5 +1,6 @@
 import { Link, makeStyles, Theme, Typography } from '@material-ui/core';
 import React from 'react';
+import ConnectWallet from './ConnectWallet';
 
 const useStyles = makeStyles((theme: Theme) => ({
     logo: {
@@ -60,7 +61,8 @@ export default function Header(){
                 <Link href="/" className={isActive("/") ? classes.active : classes.link} underline="none">Home</Link>
                 <Link href="/space" className={isActive("/space") ? classes.active : classes.link} underline="none">Space</Link>
             </ul>
-            <Typography component="h2" className={classes.connect}>Connect Wallet</Typography>
+            {/* <Typography component="h2" className={classes.connect}>Connect Wallet</Typography> */}
+            <ConnectWallet />
         </nav>
     )
 }
