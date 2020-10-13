@@ -47,6 +47,7 @@ export default function ConnectWallet(){
         }
       }}
       onConnect={(provider: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const web3 = new Web3(provider); // add provider to web3
       }}
       onClose={() => {
