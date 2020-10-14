@@ -1,5 +1,6 @@
 import { makeStyles, Tabs, Tab } from '@material-ui/core';
 import React from 'react';
+import Graph from './Graph';
 import Header from './Header';
 
 const useStyles = makeStyles({
@@ -23,7 +24,8 @@ export default function Space() {
   return (
     <div className={classes.root}>
         <Header />
-        <Tabs
+        <Graph />
+        {/* <Tabs
             value={value}
             onChange={handleChange}
             indicatorColor="primary"
@@ -33,7 +35,7 @@ export default function Space() {
         >
             <Tab label="Buy" style={{fontSize: '2.4rem', fontWeight: 'bold'}}/>
             <Tab label="Rent" style={{fontSize: '2.4rem', fontWeight: 'bold'}}/>
-        </Tabs>
+        </Tabs> */}
     </div>
   );
 }
