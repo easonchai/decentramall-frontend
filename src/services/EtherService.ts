@@ -44,7 +44,7 @@ export default class EtherService {
         'function extendRent(uint256 tokenId, uint256 rentDuration) public',
         'function claim(uint256 tokenId) public',
         'function withdraw(uint256 tokenId) public',
-        'function totalSupply() public view override returns (uint256)', // This is from ERC721
+        'function totalSupply() public view returns (uint256)', // This is from ERC721
     ];
   }
 

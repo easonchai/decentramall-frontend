@@ -2,6 +2,7 @@ import { Button, makeStyles, Theme, Typography } from '@material-ui/core';
 import React from 'react';
 import Graph from './Graph';
 import Header from './Header';
+import EtherService from '../services/EtherService';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -46,6 +47,23 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function Space() {
   const classes = useStyles();
+  let etherService = EtherService.getInstance();
+
+  const callbackFn = (result: any) => {
+    console.log("cb fn ", result);
+  }
+
+  const getPrice = () => {
+    etherService.price(1, callbackFn)
+      .then((val) => console.log(val.toString()))
+      .catch((err: any) => console.error(err));
+  }
+
+  const buySpace = () => {
+    etherService.buy(callbackFn)
+      .then(val => console.log(val))
+      .catch(err => console.log(err))
+  }
 
   return (
     <div className={classes.root}>
@@ -55,10 +73,10 @@ export default function Space() {
           <Graph />
         </div>
         <span className={classes.newUserOptions}>
-          <Button variant="contained" color="primary" className={classes.primaryButton}>
+          <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
             Buy Space
           </Button>
-          <Button variant="outlined" color="primary" className={classes.secondaryButton}>
+          <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => getPrice()}>
             Rent Space
           </Button>
         </span>
