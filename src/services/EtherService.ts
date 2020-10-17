@@ -43,7 +43,8 @@ export default class EtherService {
         'function cancelRent(uint256 tokenId) public',
         'function extendRent(uint256 tokenId, uint256 rentDuration) public',
         'function claim(uint256 tokenId) public',
-        'function withdraw(uint256 tokenId) public'
+        'function withdraw(uint256 tokenId) public',
+        'function totalSupply() public view override returns (uint256)', // This is from ERC721
     ];
   }
 
@@ -116,70 +117,44 @@ export default class EtherService {
     });
   }
 
-  public async deployFirstMeeting(
-    startDate: number,
-    endDate: number,
-    minStake: number,
-    registrationLimit: number,
+  public async price(
+    x: number,
     eventCallback: (event: any) => void
   ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      // TODO: verify whether we need this check in all functions or if we can refactor it globally on connection change
-      if (this.isEthereumNodeAvailable()) {
-        const deployerContract = new ethers.Contract(this.deployerContractAddress, this.deployerABI, this.signer);
+    return new Promise<string>(async (resolve,reject) => {
+        if (this.isEthereumNodeAvailable()) {
+            const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
 
-        // Notify frontend about successful deployment (TX mined)
-        deployerContract
-          .once("NewClub", (admin, clubAddress, event) => {
-            const clubContract = new ethers.Contract(clubAddress, this.clubABI, this.signer);
-
-            clubContract
-              .once("NewMeetingEvent", (ownerAddr, contractAddr, event) => eventCallback(event))
-              .once("error", console.error);
-
-            clubContract
-              .deployMeeting(startDate, endDate, ethers.utils.parseEther(String(minStake)), registrationLimit)
-              .then(
-                (success: any) => resolve({ ...success, clubAddress: clubAddress }),
-                (reason: any) => reject(reason)
-              )
-              .catch((error: any) => reject(error.message));
-          })
-          .once("error", console.error);
-
-        // Send TX
-        deployerContract
-          .deploy()
-          .then(
-            (success: any) => {
-              console.log(success);
-            },
-            (reason: any) => reject(reason)
-          )
-          .catch((error: any) => reject(error.message));
-      } else {
-        reject('Please install MetaMask to interact with Ethereum blockchain.');
-      }
-    });
+            // Send TX
+            contract
+                .price(x)
+                .then(
+                    (success: any) => resolve(success),
+                    (reason: any) => reject(reason)
+                )
+                .catch((error: any) => reject(error.message));
+            
+        } else {
+            reject('Please install MetaMask to interact with Ethereum blockchain.');
+        }
+    })
   }
 
-  public async rsvp(
-    meetingAddress: string,
-    stakeAmount: number,
+  public async buy(
     eventCallback: (event: any) => void
   ): Promise<string> {
     return new Promise<string>(async (resolve, reject) => {
       if (this.isEthereumNodeAvailable()) {
-        const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
 
-        // Notify frontend about successful RSVP (TX mined)
+        // Notify frontend about successful deployment (TX mined) BuySpace(address buyer, uint256 tokenId, uint256 price)
         contract
-          .once("RSVPEvent", (addr, event) => eventCallback(event))
-          .once("error", console.error);
+            .once("BuySpace", (buyer, tokenId, price, event) => eventCallback(event))
+            .once("error", console.error);
 
         // Send TX
         contract
-          .rsvp({ value: ethers.utils.parseEther(String(stakeAmount)) })
+          .buy()
           .then(
             (success: any) => resolve(success),
             (reason: any) => reject(reason)
@@ -190,248 +165,276 @@ export default class EtherService {
       }
     });
   }
-  public async getChange(
-    meetingAddress: string,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      contract
-        .once("GetChange", (event) => eventCallback(event))
-        .once("error", console.error);
+//   public async sell(
+//     meetingAddress: string,
+//     stakeAmount: number,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       if (this.isEthereumNodeAvailable()) {
+//         const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      // Send TX
-      contract
-        .getChange()
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.reason));
-    });
-  }
-  public async eventCancel(
-    meetingAddress: string,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+//         // Notify frontend about successful RSVP (TX mined)
+//         contract
+//           .once("RSVPEvent", (addr, event) => eventCallback(event))
+//           .once("error", console.error);
 
-      contract
-        .once("EventCancelled", (event) => eventCallback(event))
-        .once("error", console.error);
+//         // Send TX
+//         contract
+//           .rsvp({ value: ethers.utils.parseEther(String(stakeAmount)) })
+//           .then(
+//             (success: any) => resolve(success),
+//             (reason: any) => reject(reason)
+//           )
+//           .catch((error: any) => reject(error.reason));
+//       } else {
+//         reject('Please install MetaMask to interact with Ethereum blockchain.');
+//       }
+//     });
+//   }
+//   public async getChange(
+//     meetingAddress: string,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      // Send TX
-      contract
-        .eventCancel()
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.reason));
-    });
-  }
-  public async guyCancel(
-    meetingAddress: string,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+//       contract
+//         .once("GetChange", (event) => eventCallback(event))
+//         .once("error", console.error);
 
-      contract
-        .once("GuyCancelled", (participant, event) => eventCallback(event))
-        .once("error", console.error);
+//       // Send TX
+//       contract
+//         .getChange()
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.reason));
+//     });
+//   }
+//   public async eventCancel(
+//     meetingAddress: string,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      // Send TX
-      contract
-        .guyCancel()
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.reason));
-    });
-  }
-  public async startEvent(
-    meetingAddress: string,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+//       contract
+//         .once("EventCancelled", (event) => eventCallback(event))
+//         .once("error", console.error);
 
-      contract
-        .once("StartEvent", (addr, event) => eventCallback(event))
-        .once("error", console.error);
+//       // Send TX
+//       contract
+//         .eventCancel()
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.reason));
+//     });
+//   }
+//   public async guyCancel(
+//     meetingAddress: string,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      // Send TX
-      contract
-        .startEvent()
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.reason));
-    });
-  }
-  public async endEvent(
-    meetingAddress: string,
-    participants: string[],
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+//       contract
+//         .once("GuyCancelled", (participant, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      contract
-        .once("EndEvent", (addr, attendance, event) => eventCallback(event))
-        .once("error", console.error);
+//       // Send TX
+//       contract
+//         .guyCancel()
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.reason));
+//     });
+//   }
+//   public async startEvent(
+//     meetingAddress: string,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      // Send TX
-      contract
-        .finaliseEvent(participants)
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.reason));
-    });
-  }
-  public async withdraw(
-    meetingAddress: string,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+//       contract
+//         .once("StartEvent", (addr, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      contract
-        .once("WithdrawEvent", (addr, event) => eventCallback(event))
-        .once("error", console.error);
+//       // Send TX
+//       contract
+//         .startEvent()
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.reason));
+//     });
+//   }
+//   public async endEvent(
+//     meetingAddress: string,
+//     participants: string[],
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      // Send TX
-      contract
-        .withdraw()
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.reason));
-    });
-  }
+//       contract
+//         .once("EndEvent", (addr, attendance, event) => eventCallback(event))
+//         .once("error", console.error);
 
-  public async nextMeeting(
-    _clubAddress: string,
-    _startDate: number,
-    _endDate: number,
-    _minStake: number,
-    _registrationLimit: number,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
+//       // Send TX
+//       contract
+//         .finaliseEvent(participants)
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.reason));
+//     });
+//   }
+//   public async withdraw(
+//     meetingAddress: string,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
 
-      clubContract
-        .once("NewMeetingEvent", (ownerAddr, contractAddr, event) => eventCallback(event))
-        .once("error", console.error);
+//       contract
+//         .once("WithdrawEvent", (addr, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      clubContract
-        .deployMeeting(_startDate, _endDate, ethers.utils.parseEther(String(_minStake)), _registrationLimit)
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.message));
-    });
-  }
+//       // Send TX
+//       contract
+//         .withdraw()
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.reason));
+//     });
+//   }
 
-  public async pause(
-    _clubAddress: string,
-    _meeting: string,
-    _pauseUntil: number,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const meetingContract = new ethers.Contract(_meeting, this.meetingABI, this.signer);
-      const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
+//   public async nextMeeting(
+//     _clubAddress: string,
+//     _startDate: number,
+//     _endDate: number,
+//     _minStake: number,
+//     _registrationLimit: number,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
 
-      meetingContract
-        .once("Pause", (pauseUntil, event) => eventCallback(event))
-        .once("error", console.error);
+//       clubContract
+//         .once("NewMeetingEvent", (ownerAddr, contractAddr, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      clubContract
-        .pause(_meeting, _pauseUntil)
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.message));
-    });
-  }
+//       clubContract
+//         .deployMeeting(_startDate, _endDate, ethers.utils.parseEther(String(_minStake)), _registrationLimit)
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.message));
+//     });
+//   }
 
-  public async proposeAdminChange(
-    _clubAddress: string,
-    _meeting: string,
-    _addAdmins: string[],
-    _removeAdmins: string[],
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
+//   public async pause(
+//     _clubAddress: string,
+//     _meeting: string,
+//     _pauseUntil: number,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const meetingContract = new ethers.Contract(_meeting, this.meetingABI, this.signer);
+//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
 
-      clubContract
-        .once("ProposeAdminChange", (counter, meeting, addAdmins, removeAdmins, event) => eventCallback(event))
-        .once("error", console.error);
+//       meetingContract
+//         .once("Pause", (pauseUntil, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      clubContract
-        .proposeAdminChange(_meeting, _addAdmins, _removeAdmins)
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.message));
-    });
-  }
+//       clubContract
+//         .pause(_meeting, _pauseUntil)
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.message));
+//     });
+//   }
 
-  public async approveProposal(
-    _clubAddress: string,
-    _id: number,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
+//   public async proposeAdminChange(
+//     _clubAddress: string,
+//     _meeting: string,
+//     _addAdmins: string[],
+//     _removeAdmins: string[],
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
 
-      clubContract
-        .once("ApproveProposal", (proposalId, event) => eventCallback(event))
-        .once("error", console.error);
+//       clubContract
+//         .once("ProposeAdminChange", (counter, meeting, addAdmins, removeAdmins, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      clubContract
-        .approveProposal(_id)
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.message));
-    });
-  }
+//       clubContract
+//         .proposeAdminChange(_meeting, _addAdmins, _removeAdmins)
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.message));
+//     });
+//   }
 
-  public async executeProposal(
-    _clubAddress: string,
-    _id: number,
-    eventCallback: (event: any) => void
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-      const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
+//   public async approveProposal(
+//     _clubAddress: string,
+//     _id: number,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
 
-      clubContract
-        .once("ProposalExecuted", (target, addAdmins, removeAdmins, event) => eventCallback(event))
-        .once("error", console.error);
+//       clubContract
+//         .once("ApproveProposal", (proposalId, event) => eventCallback(event))
+//         .once("error", console.error);
 
-      clubContract
-        .executeProposal(_id)
-        .then(
-          (success: any) => resolve(success),
-          (reason: any) => reject(reason)
-        )
-        .catch((error: any) => reject(error.message));
-    });
-  }
+//       clubContract
+//         .approveProposal(_id)
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.message));
+//     });
+//   }
+
+//   public async executeProposal(
+//     _clubAddress: string,
+//     _id: number,
+//     eventCallback: (event: any) => void
+//   ): Promise<string> {
+//     return new Promise<string>(async (resolve, reject) => {
+//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
+
+//       clubContract
+//         .once("ProposalExecuted", (target, addAdmins, removeAdmins, event) => eventCallback(event))
+//         .once("error", console.error);
+
+//       clubContract
+//         .executeProposal(_id)
+//         .then(
+//           (success: any) => resolve(success),
+//           (reason: any) => reject(reason)
+//         )
+//         .catch((error: any) => reject(error.message));
+//     });
+//   }
 }
