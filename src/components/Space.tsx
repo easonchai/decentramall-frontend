@@ -69,10 +69,12 @@ export default function Space() {
       .then(currentSupply => 
         etherService.price(parseInt(currentSupply,16)+1, callbackFn)
           // Then approve
-          .then(price => 
+          .then(price => {
+            console.log("Price: ", price)
             etherService.approve(price, callbackFn)
               .then(val => console.log("Success approve", val))
               .catch(err => console.log("Fail approve", err))
+            }
           ).catch(err => console.log("Fail get price", err))
       ).catch(err => console.log("Fail get supply", err));
   }
