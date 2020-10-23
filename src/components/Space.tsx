@@ -1,5 +1,5 @@
 import { Button, makeStyles, Theme, Typography } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import Graph from './Graph';
 import Header from './Header';
 import EtherService from '../services/EtherService';
@@ -48,19 +48,30 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
+  const [price, setPrice] = useState("0");
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
   }
 
-  const getPrice = () => {
-    etherService.price(1, callbackFn)
-      .then((val) => console.log(val.toString()))
+  const getPrice = async () => {
+    etherService.price(2, callbackFn)
+      .then((val) => {
+        setPrice(val);
+        console.log(val);
+      })
       .catch((err: any) => console.error(err));
   }
 
   const buySpace = () => {
     etherService.buy(callbackFn)
+      .then(val => console.log(val))
+      .catch(err => console.log(err))
+  }
+
+  const approveAmount = async () => {
+    await getPrice();
+    etherService.approve(price, callbackFn)
       .then(val => console.log(val))
       .catch(err => console.log(err))
   }
@@ -76,7 +87,7 @@ export default function Space() {
           <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
             Buy Space
           </Button>
-          <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => getPrice()}>
+          <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
             Rent Space
           </Button>
         </span>

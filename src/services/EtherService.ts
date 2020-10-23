@@ -150,6 +150,28 @@ export default class EtherService {
     })
   }
 
+  public async approve(
+    amount: string,
+    eventCallback: (event: any) => void
+  ): Promise<string> {
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.daiAddress, this.daiABI, this.signer);
+
+        // Send TX
+        contract
+          .approve(this.daiAddress, amount)
+          .then(
+              (success: any) => resolve(success),
+              (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.message));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
+
   public async price(
     x: number,
     eventCallback: (event: any) => void
