@@ -129,6 +129,22 @@ export default class EtherService {
     });
   }
 
+  public async totalSupply(): Promise<string> {
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()) {
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract.totalSupply()
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.message));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
+
   public async mint(
     to: string,
     amount: string,

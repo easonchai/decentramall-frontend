@@ -49,18 +49,10 @@ export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
   const [price, setPrice] = useState("0");
+  const [currentSupply, setCurrentSupply] = useState(0);
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
-  }
-
-  const getPrice = async () => {
-    etherService.price(2, callbackFn)
-      .then((val) => {
-        setPrice(val);
-        console.log(val);
-      })
-      .catch((err: any) => console.error(err));
   }
 
   const buySpace = () => {
@@ -70,10 +62,19 @@ export default function Space() {
   }
 
   const approveAmount = async () => {
-    await getPrice();
-    etherService.approve(price, callbackFn)
-      .then(val => console.log(val))
-      .catch(err => console.log(err))
+    //Bad idea to chain but it is what it is    
+    // First, get total supply
+    etherService.totalSupply()
+      // Then get price
+      .then(currentSupply => 
+        etherService.price(parseInt(currentSupply,16)+1, callbackFn)
+          // Then approve
+          .then(price => 
+            etherService.approve(price, callbackFn)
+              .then(val => console.log("Success approve", val))
+              .catch(err => console.log("Fail approve", err))
+          ).catch(err => console.log("Fail get price", err))
+      ).catch(err => console.log("Fail get supply", err));
   }
 
   return (
