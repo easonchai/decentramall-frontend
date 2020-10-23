@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import Space from "./components/Space";
 import Store from "./components/Store";
 import Home from "./components/Home";
+import Admin from './components/Admin';
 
 const THEME = createMuiTheme({
   typography: {
@@ -35,6 +36,7 @@ ReactDOM.render(
   <MuiThemeProvider theme={THEME}>
     <BrowserRouter>
       <Switch>
+        <Route path="/admin" component={Admin} />
         <Route path="/space" component={Space} />
         <Route path="/store/:id" component={Store} />
         <Route path="/" component={Home} />

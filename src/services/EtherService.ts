@@ -8,6 +8,8 @@ export default class EtherService {
   signer: any;
   decentramallAddress: string;
   decentramallABI: Array<string>;
+  daiAddress: string;
+  daiABI: Array<string>;
 
   private static instance: EtherService;
 
@@ -24,28 +26,37 @@ export default class EtherService {
       this.signer = null;
     }
 
-    this.decentramallAddress = '0xb5e9CA24cE71643DBbe4b54917F4683478746f25';
+    this.decentramallAddress = '0x31263af02f40Aa9479eCb7e1c890999863b69725';
+    this.daiAddress = '0xe7e8F9a8648581433710105C380cE71771422d08';
 
     this.decentramallABI = [
-        'event BuySpace(address buyer, uint256 tokenId, uint256 price)',
-        'event SellSpace(address seller, uint256 tokenId, uint256 price)',
-        'event DepositSpace(address depositor, uint256 tokenId, uint256 maxRentableBlock)',
-        'event WithdrawSpace(address withdrawer, uint256 tokenId)',
-        'event RentSpace(address renter, uint256 tokenId, uint256 expiryBlock, uint256 rentPaid)',
-        'event ClaimRent(address owner, uint256 tokenId, uint256 rentClaimed)',
-        'event ExtendRent(address renter, uint256 tokenId, uint256 newExpiryBlock, uint256 newRentPaid)',
-        'event CancelRent(address renter, uint256 tokenId)',
-        'function price(uint256 x) public view returns(uint256)',
-        'function buy() public',
-        'function sell(uint256 tokenId) public',
-        'function deposit(uint256 tokenId, uint256 stakeDuration) public',
-        'function rent(uint256 tokenId, string memory _tokenURI, uint256 rentDuration) public',
-        'function cancelRent(uint256 tokenId) public',
-        'function extendRent(uint256 tokenId, uint256 rentDuration) public',
-        'function claim(uint256 tokenId) public',
-        'function withdraw(uint256 tokenId) public',
-        'function totalSupply() public view returns (uint256)', // This is from ERC721
+      'event ChangeDai(address newDai)',
+      'event ChangeAdmin(address newAdmin)',
+      'event BuySpace(address buyer, uint256 tokenId, uint256 price)',
+      'event SellSpace(address seller, uint256 tokenId, uint256 price)',
+      'event DepositSpace(address depositor, uint256 tokenId, uint256 maxRentableBlock)',
+      'event WithdrawSpace(address withdrawer, uint256 tokenId)',
+      'event RentSpace(address renter, uint256 tokenId, uint256 expiryBlock, uint256 rentPaid)',
+      'event ClaimRent(address owner, uint256 tokenId, uint256 rentClaimed)',
+      'event ExtendRent(address renter, uint256 tokenId, uint256 newExpiryBlock, uint256 newRentPaid)',
+      'event CancelRent(address renter, uint256 tokenId)',
+      'function price(uint256 x) public view returns(uint256)',
+      'function buy() public',
+      'function sell(uint256 tokenId) public',
+      'function deposit(uint256 tokenId, uint256 stakeDuration) public',
+      'function rent(uint256 tokenId, string memory _tokenURI, uint256 rentDuration) public',
+      'function cancelRent(uint256 tokenId) public',
+      'function extendRent(uint256 tokenId, uint256 rentDuration) public',
+      'function claim(uint256 tokenId) public',
+      'function withdraw(uint256 tokenId) public',
+      'function totalSupply() public view returns (uint256)', // This is from ERC721
+      'function changeDaiAddress(address newDai) public',
+      'function changeAdmin(address newAdmin) public',
     ];
+
+    this.daiABI = [
+      'function mint(address to, uint256 amount) public'
+    ]
   }
 
   public static getInstance(): EtherService {
@@ -115,6 +126,27 @@ export default class EtherService {
         reject('Please install MetaMask to interact with Ethereum blockchain.');
       }
     });
+  }
+
+  public async mint(
+    to: string,
+    amount: string,
+    eventCallback: (event: any) => void
+  ): Promise<string> {
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()) {
+        const contract = new ethers.Contract(this.daiAddress, this.daiABI, this.signer);
+
+        contract.mint(to, amount)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.message));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
   }
 
   public async price(
