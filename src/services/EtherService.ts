@@ -55,7 +55,8 @@ export default class EtherService {
     ];
 
     this.daiABI = [
-      'function mint(address to, uint256 amount) public'
+      'function mint(address to, uint256 amount) public',
+      'function approve(address sender, uint256 amount) public',
     ]
   }
 
