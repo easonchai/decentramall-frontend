@@ -432,4 +432,79 @@ export default class EtherService {
       }
     })
   }
+
+  public async withdraw(
+    tokenId: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("WithdrawSpace", (withdrawer, tokenId, event) => eventCallback(event))
+            .once("error", console.error);
+
+        // Send TX
+        contract
+          .withdraw(tokenId)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
+
+  public async changeDaiAddress(
+    address: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("ChangeDai", (newDai, event) => eventCallback(event))
+            .once("error", console.error);
+
+        // Send TX
+        contract
+          .changeDaiAddress(address)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
+
+  public async changeAdmin(
+    address: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("ChangeAdmin", (newAdmin, event) => eventCallback(event))
+            .once("error", console.error);
+
+        // Send TX
+        contract
+          .changeAdmin(address)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 }
