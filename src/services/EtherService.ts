@@ -279,275 +279,157 @@ export default class EtherService {
     });
   }
 
-//   public async sell(
-//     meetingAddress: string,
-//     stakeAmount: number,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       if (this.isEthereumNodeAvailable()) {
-//         const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+  public async sell(
+    tokenId: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("SellSpace", (seller, tokenId, price, event) => eventCallback(event))
+            .once("error", console.error);
 
-//         // Notify frontend about successful RSVP (TX mined)
-//         contract
-//           .once("RSVPEvent", (addr, event) => eventCallback(event))
-//           .once("error", console.error);
+        // Send TX
+        contract
+          .sell(tokenId)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 
-//         // Send TX
-//         contract
-//           .rsvp({ value: ethers.utils.parseEther(String(stakeAmount)) })
-//           .then(
-//             (success: any) => resolve(success),
-//             (reason: any) => reject(reason)
-//           )
-//           .catch((error: any) => reject(error.reason));
-//       } else {
-//         reject('Please install MetaMask to interact with Ethereum blockchain.');
-//       }
-//     });
-//   }
-//   public async getChange(
-//     meetingAddress: string,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+  public async deposit(
+    tokenId: string,
+    stakeDuration: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("DepositSpace", (depositor, tokenId, maxRentableBlock, event) => eventCallback(event))
+            .once("error", console.error);
 
-//       contract
-//         .once("GetChange", (event) => eventCallback(event))
-//         .once("error", console.error);
+        // Send TX
+        contract
+          .deposit(tokenId, stakeDuration)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 
-//       // Send TX
-//       contract
-//         .getChange()
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.reason));
-//     });
-//   }
-//   public async eventCancel(
-//     meetingAddress: string,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+  public async rent(
+    tokenId: string,
+    _tokenUri: string,
+    rentDuration: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("RentSpace", (renter, tokenId, expiryBlock, rentPaid, event) => eventCallback(event))
+            .once("error", console.error);
 
-//       contract
-//         .once("EventCancelled", (event) => eventCallback(event))
-//         .once("error", console.error);
+        // Send TX
+        contract
+          .rent(tokenId, _tokenUri, rentDuration)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 
-//       // Send TX
-//       contract
-//         .eventCancel()
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.reason));
-//     });
-//   }
-//   public async guyCancel(
-//     meetingAddress: string,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+  public async cancelRent(
+    tokenId: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("CancelRent", (tokenId, event) => eventCallback(event))
+            .once("error", console.error);
 
-//       contract
-//         .once("GuyCancelled", (participant, event) => eventCallback(event))
-//         .once("error", console.error);
+        // Send TX
+        contract
+          .cancelRent(tokenId)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 
-//       // Send TX
-//       contract
-//         .guyCancel()
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.reason));
-//     });
-//   }
-//   public async startEvent(
-//     meetingAddress: string,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+  public async extendRent(
+    tokenId: string,
+    rentDuration: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("ExtendRent", (renter, tokenId, newExpiryBlock, newRentPaid, event) => eventCallback(event))
+            .once("error", console.error);
 
-//       contract
-//         .once("StartEvent", (addr, event) => eventCallback(event))
-//         .once("error", console.error);
+        // Send TX
+        contract
+          .extendRent(tokenId, rentDuration)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 
-//       // Send TX
-//       contract
-//         .startEvent()
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.reason));
-//     });
-//   }
-//   public async endEvent(
-//     meetingAddress: string,
-//     participants: string[],
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
+  public async claim(
+    tokenId: string,
+    eventCallback: (event: any) => void
+  ): Promise<string>{
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract
+            .once("ClaimRent", (owner, tokenId, rentClaimed, event) => eventCallback(event))
+            .once("error", console.error);
 
-//       contract
-//         .once("EndEvent", (addr, attendance, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       // Send TX
-//       contract
-//         .finaliseEvent(participants)
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.reason));
-//     });
-//   }
-//   public async withdraw(
-//     meetingAddress: string,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const contract = new ethers.Contract(meetingAddress, this.meetingABI, this.signer);
-
-//       contract
-//         .once("WithdrawEvent", (addr, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       // Send TX
-//       contract
-//         .withdraw()
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.reason));
-//     });
-//   }
-
-//   public async nextMeeting(
-//     _clubAddress: string,
-//     _startDate: number,
-//     _endDate: number,
-//     _minStake: number,
-//     _registrationLimit: number,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
-
-//       clubContract
-//         .once("NewMeetingEvent", (ownerAddr, contractAddr, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       clubContract
-//         .deployMeeting(_startDate, _endDate, ethers.utils.parseEther(String(_minStake)), _registrationLimit)
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.message));
-//     });
-//   }
-
-//   public async pause(
-//     _clubAddress: string,
-//     _meeting: string,
-//     _pauseUntil: number,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const meetingContract = new ethers.Contract(_meeting, this.meetingABI, this.signer);
-//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
-
-//       meetingContract
-//         .once("Pause", (pauseUntil, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       clubContract
-//         .pause(_meeting, _pauseUntil)
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.message));
-//     });
-//   }
-
-//   public async proposeAdminChange(
-//     _clubAddress: string,
-//     _meeting: string,
-//     _addAdmins: string[],
-//     _removeAdmins: string[],
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
-
-//       clubContract
-//         .once("ProposeAdminChange", (counter, meeting, addAdmins, removeAdmins, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       clubContract
-//         .proposeAdminChange(_meeting, _addAdmins, _removeAdmins)
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.message));
-//     });
-//   }
-
-//   public async approveProposal(
-//     _clubAddress: string,
-//     _id: number,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
-
-//       clubContract
-//         .once("ApproveProposal", (proposalId, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       clubContract
-//         .approveProposal(_id)
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.message));
-//     });
-//   }
-
-//   public async executeProposal(
-//     _clubAddress: string,
-//     _id: number,
-//     eventCallback: (event: any) => void
-//   ): Promise<string> {
-//     return new Promise<string>(async (resolve, reject) => {
-//       const clubContract = new ethers.Contract(_clubAddress, this.clubABI, this.signer);
-
-//       clubContract
-//         .once("ProposalExecuted", (target, addAdmins, removeAdmins, event) => eventCallback(event))
-//         .once("error", console.error);
-
-//       clubContract
-//         .executeProposal(_id)
-//         .then(
-//           (success: any) => resolve(success),
-//           (reason: any) => reject(reason)
-//         )
-//         .catch((error: any) => reject(error.message));
-//     });
-//   }
+        // Send TX
+        contract
+          .claim(tokenId)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.reason));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.');
+      }
+    })
+  }
 }
