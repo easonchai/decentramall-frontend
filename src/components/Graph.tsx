@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
 import Chart from 'chart.js';
 
-interface Props{
-    current:number;
-}
-
-export default function Graph(props: Props){
+export default function Graph(){
     //To do: make label only depend on the current supply
     useEffect(() => {
         var ctx = document.getElementById("myChart");
         var data = {
-            labels: props.current,
+            labels: Array.from({length: 1200}, (_, i) => i + 1),
             datasets: [{
                 label: "Price (DAI)",
                 function: function(x) { 

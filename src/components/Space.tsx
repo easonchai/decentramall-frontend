@@ -83,7 +83,7 @@ export default function Space() {
         <Header />
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
         <div className={classes.graph}>
-          <Graph current={currentSupply}/>
+          <Graph />
         </div>
         <span className={classes.newUserOptions}>
           <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
