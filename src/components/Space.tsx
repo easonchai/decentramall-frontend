@@ -123,7 +123,7 @@ export default function Space() {
               Deposit Space
             </Button>
             <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
-              Withdraw Space
+              Sell Space
             </Button>
           </span>
           :
