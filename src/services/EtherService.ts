@@ -52,6 +52,8 @@ export default class EtherService {
       'function totalSupply() public view returns (uint256)', // This is from ERC721
       'function changeDaiAddress(address newDai) public',
       'function changeAdmin(address newAdmin) public',
+      'function balanceOf(address owner) public view returns (uint256)',
+      'function tokenOfOwnerByIndex(address owner, uint256 index) public view returns (uint256)'
     ];
 
     this.daiABI = [
@@ -129,6 +131,7 @@ export default class EtherService {
     });
   }
 
+  // BASIC ERC721 IMPLEMENTATIONS
   public async totalSupply(): Promise<string> {
     return new Promise<string>(async (resolve, reject) => {
       if(this.isEthereumNodeAvailable()) {
