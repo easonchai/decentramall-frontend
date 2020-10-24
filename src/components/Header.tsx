@@ -61,6 +61,10 @@ export default function Header(){
         }
     }
 
+    const printAddress = (address:string) => {
+        return address.substring(0, 8) + "..." + address.substring(address.length-7, address.length+1)
+    }
+
     return(
         <nav className={classes.navigation}>
             <Typography component="h1" style={{flex: '1'}}>
@@ -73,8 +77,12 @@ export default function Header(){
             <div className={classes.connect}>
                 {
                 connected ?
-                    <Box component="span">
+                    <Box component="div" display="flex" alignItems="center">
                         <Blockies seed={userAddress} />
+                        <Box component="div" display="flex" flexDirection="column" padding="10px" justifyContent="flex-end">
+                            <Typography component="h2" style={{fontWeight: 'bold', fontSize:'1.8rem'}}>{printAddress(userAddress)}</Typography>
+                            <Typography component="p" style={{fontWeight: 'lighter', fontSize:'1.2rem'}}>Connected</Typography>
+                        </Box>
                     </Box>
                     :
                     <Web3Connect.Button
