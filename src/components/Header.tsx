@@ -1,4 +1,4 @@
-import { Link, makeStyles, Theme, Typography } from '@material-ui/core';
+import { Box, Link, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import Blockies from 'react-blockies';
 import Web3Connect from "web3connect";
@@ -8,6 +8,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 // import MewConnect from "@myetherwallet/mewconnect-web-client";
 import Torus from "@toruslabs/torus-embed";
 import Web3 from 'web3';
+import EtherService from '../services/EtherService';
 
 const useStyles = makeStyles((theme: Theme) => ({
     logo: {
@@ -48,6 +49,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function Header(){
     const classes = useStyles();
+    let etherService = EtherService.getInstance();
+    let userAddress = etherService.getUserAddress();
     const [connected, setConnected] = useState(false);
 
     const isActive = (href:string) => {
@@ -70,7 +73,9 @@ export default function Header(){
             <div className={classes.connect}>
                 {
                 connected ?
-                    "Connected"
+                    <Box component="span">
+                        <Blockies seed={} />
+                    </Box>
                     :
                     <Web3Connect.Button
                         network="ropsten" // optional
@@ -112,7 +117,7 @@ export default function Header(){
                         onConnect={(provider: any) => {
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             const web3 = new Web3(provider); // add provider to web3
-                            console.log("connected!")
+                            setConnected(true);
                         }}
                         onClose={() => {
                             console.log("Web3Connect Modal Closed"); // modal has closed
