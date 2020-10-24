@@ -68,11 +68,12 @@ export default function Space() {
             etherService.tokenByIndex(userAddress, i.toString())
               .then(token => {
                 if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
-                  console.log("Owner")
+                  // console.log("Owner")
                   setIsOwner(true);
-                } else {
-                  console.log("not owner")
-                }
+                } 
+                // else {
+                //   console.log("not owner")
+                // }
               })
           }
         }
@@ -115,14 +116,26 @@ export default function Space() {
         <div className={classes.graph}>
           <Graph />
         </div>
-        <span className={classes.newUserOptions}>
-          <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
-            Buy Space
-          </Button>
-          <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
-            Rent Space
-          </Button>
-        </span>
+        {
+          isOwner ?
+          <span className={classes.newUserOptions}>
+            <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
+              Deposit Space
+            </Button>
+            <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
+              Withdraw Space
+            </Button>
+          </span>
+          :
+          <span className={classes.newUserOptions}>
+            <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
+              Buy Space
+            </Button>
+            <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
+              Rent Space
+            </Button>
+          </span>
+        }
     </div>
   );
 }
