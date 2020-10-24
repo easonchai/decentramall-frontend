@@ -5,6 +5,11 @@ import Header from './Header';
 import EtherService from '../services/EtherService';
 import keccak256 from 'keccak256';
 
+interface BigNumber {
+  _hex: string;
+  _isBigNumber: boolean;
+}
+
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '85%', 
@@ -52,7 +57,7 @@ export default function Space() {
   let userAddress = etherService.getUserAddress();
   const [currentSupply, setCurrentSupply] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
-  
+
   useEffect(() => {
     // First, get the current total supply
     etherService.totalSupply()
@@ -66,9 +71,16 @@ export default function Space() {
           let bal = parseInt(balance, 16);
           for(let i=0; i<bal; i++){
             etherService.tokenByIndex(userAddress, i.toString())
-              .then(token => {
-                console.log("Token: ", token)
-                console.log("Address: ", keccak256(userAddress).toString('hex'))
+              .then((token:BigNumber) => {
+                console.log(token._hex.toString().substring(2))
+                // console.log(token[0])
+                console.log(keccak256(userAddress).toString('hex'))
+                if(token.toString().substring(2) === keccak256(userAddress).toString('hex')){
+                  console.log("Owner")
+                  setIsOwner(true);
+                } else {
+                  console.log("not owner")
+                }
               })
           }
         }
