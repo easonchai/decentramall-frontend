@@ -48,13 +48,29 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
+  let userAddress = etherService.getUserAddress();
   const [currentSupply, setCurrentSupply] = useState(0);
 
   useEffect(() => {
+    // First, get the current total supply
     etherService.totalSupply()
       .then(val => setCurrentSupply(parseInt(val, 16)))
       .catch(err => console.log("Fail get supply", err));
-  },[])
+
+    // Then check if this person already bought a SPACE token
+    if(userAddress){
+      etherService.balanceOf(userAddress).then(
+        balance => {
+          let bal = parseInt(balance, 16);
+          for(let i=0; i<bal; i++){
+            etherService.tokenByIndex(userAddress, i.toString())
+              .then(token => console.log("Token: ", token))
+          }
+        }
+      )
+    }
+    
+  },[etherService, userAddress])
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
