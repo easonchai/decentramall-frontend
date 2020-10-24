@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import Header from './Header';
 import EtherService from '../services/EtherService';
+import keccak256 from 'keccak256';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -50,7 +51,8 @@ export default function Space() {
   let etherService = EtherService.getInstance();
   let userAddress = etherService.getUserAddress();
   const [currentSupply, setCurrentSupply] = useState(0);
-
+  const [isOwner, setIsOwner] = useState(false);
+  
   useEffect(() => {
     // First, get the current total supply
     etherService.totalSupply()
@@ -64,7 +66,10 @@ export default function Space() {
           let bal = parseInt(balance, 16);
           for(let i=0; i<bal; i++){
             etherService.tokenByIndex(userAddress, i.toString())
-              .then(token => console.log("Token: ", token))
+              .then(token => {
+                console.log("Token: ", token)
+                console.log("Address: ", keccak256(userAddress).toString('hex'))
+              })
           }
         }
       )
