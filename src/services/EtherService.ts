@@ -148,6 +148,44 @@ export default class EtherService {
     })
   }
 
+  public async balanceOf(
+    address:string
+  ): Promise<string> {
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract.balanceOf(address)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.message));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.')
+      }
+    })
+  }
+
+  public async tokenByIndex(
+    address:string,
+    index:string
+  ): Promise<string> {
+    return new Promise<string>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract.tokenOfOwnerByIndex(address, index)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.message));
+      } else {
+        reject('Please install MetaMask to interact with Ethereum blockchain.')
+      }
+    })
+  }
+
+  // DAI IMPLEMENTATION
   public async mint(
     to: string,
     amount: string,
@@ -191,6 +229,7 @@ export default class EtherService {
     })
   }
 
+  // DECENTRAMALL IMPLEMENTATION
   public async price(
     x: number,
     eventCallback: (event: any) => void
