@@ -25,6 +25,7 @@
     "ethers": "^5.0.17",
     "fortmatic": "^2.2.1",
     "react": "^16.13.1",
+    "react-blockies": "^1.4.1",
     "react-dom": "^16.13.1",
     "react-gsap": "^2.2.1",
     "react-router": "^5.2.0",
