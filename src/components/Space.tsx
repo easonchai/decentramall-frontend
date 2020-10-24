@@ -63,10 +63,15 @@ export default function Space() {
   const buySpace = () => {
     etherService.buy(callbackFn)
       .then(val => console.log(val))
-      .catch(err => console.log(err))
+      .catch((err) => {
+        if(err.code === "UNPREDICTABLE_GAS_LIMIT"){
+          approveAmount();
+        }
+      })
   }
 
   const approveAmount = async () => {
+    console.log("current", currentSupply)
     etherService.price(currentSupply+1, callbackFn)
       // Then approve
       .then(price => {
