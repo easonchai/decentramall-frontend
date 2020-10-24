@@ -67,10 +67,7 @@ export default function Space() {
           for(let i=0; i<bal; i++){
             etherService.tokenByIndex(userAddress, i.toString())
               .then(token => {
-                console.log(token._hex.toString().substring(2))
-                // console.log(token[0])
-                console.log(keccak256(userAddress).toString('hex'))
-                if(token.toString().substring(2) === keccak256(userAddress).toString('hex')){
+                if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
                   console.log("Owner")
                   setIsOwner(true);
                 } else {
