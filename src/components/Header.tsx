@@ -74,7 +74,7 @@ export default function Header(){
                 {
                 connected ?
                     <Box component="span">
-                        <Blockies seed={} />
+                        <Blockies seed={userAddress} />
                     </Box>
                     :
                     <Web3Connect.Button
