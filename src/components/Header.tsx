@@ -77,9 +77,9 @@ export default function Header(){
             <div className={classes.connect}>
                 {
                 connected ?
-                    <Box component="div" display="flex" alignItems="center">
+                    <Box component="div" display="flex" alignItems="center" justifyContent="flex-end">
                         <Blockies seed={userAddress} />
-                        <Box component="div" display="flex" flexDirection="column" padding="10px" justifyContent="flex-end">
+                        <Box component="div" display="flex" flexDirection="column" padding="10px" alignItems="flex-end">
                             <Typography component="h2" style={{fontWeight: 'bold', fontSize:'1.8rem'}}>{printAddress(userAddress)}</Typography>
                             <Typography component="p" style={{fontWeight: 'lighter', fontSize:'1.2rem'}}>Connected</Typography>
                         </Box>
