@@ -1,5 +1,5 @@
 import { Button, makeStyles, Theme, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import Header from './Header';
 import EtherService from '../services/EtherService';
@@ -48,6 +48,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
+  const [currentSupply, setCurrentSupply] = useState(0);
+
+  useEffect(() => {
+    etherService.totalSupply()
+      .then(val => setCurrentSupply(parseInt(val, 16)))
+      .catch(err => console.log("Fail get supply", err));
+  },[])
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
@@ -60,21 +67,15 @@ export default function Space() {
   }
 
   const approveAmount = async () => {
-    //Bad idea to chain but it is what it is    
-    // First, get total supply
-    etherService.totalSupply()
-      // Then get price
-      .then(currentSupply => 
-        etherService.price(parseInt(currentSupply,16)+1, callbackFn)
-          // Then approve
-          .then(price => {
-            console.log("Price: ", price)
-            etherService.approve(price, callbackFn)
-              .then(val => console.log("Success approve", val))
-              .catch(err => console.log("Fail approve", err))
-            }
-          ).catch(err => console.log("Fail get price", err))
-      ).catch(err => console.log("Fail get supply", err));
+    etherService.price(currentSupply+1, callbackFn)
+      // Then approve
+      .then(price => {
+        console.log("Price: ", price)
+        etherService.approve(price, callbackFn)
+          .then(val => console.log("Success approve", val))
+          .catch(err => console.log("Fail approve", err))
+        }
+      ).catch(err => console.log("Fail get price", err))
   }
 
   return (
@@ -82,7 +83,7 @@ export default function Space() {
         <Header />
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
         <div className={classes.graph}>
-          <Graph />
+          <Graph current={currentSupply}/>
         </div>
         <span className={classes.newUserOptions}>
           <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>

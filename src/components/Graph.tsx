@@ -10,7 +10,7 @@ export default function Graph(props: Props){
     useEffect(() => {
         var ctx = document.getElementById("myChart");
         var data = {
-            labels: current,
+            labels: props.current,
             datasets: [{
                 label: "Price (DAI)",
                 function: function(x) { 

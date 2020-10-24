@@ -15,10 +15,6 @@ export default function Admin() {
     const classes = useStyles();
     let etherService = EtherService.getInstance();
     const [value, setValue] = React.useState(30);
-
-    const handleSliderChange = (event: any, newValue: number | number[]) => {
-        setValue(newValue);
-      };
     
       const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value === '' ? 0 : parseInt(event.target.value));
@@ -45,11 +41,6 @@ export default function Admin() {
     return(
         <div>
             <Typography component="h1">Hey Admin!</Typography>
-            <Slider
-                value={typeof value === 'number' ? value : 0}
-                onChange={handleSliderChange}
-                aria-labelledby="input-slider"
-            />
             <Input
                 className={classes.input}
                 value={value}
