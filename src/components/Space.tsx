@@ -5,11 +5,6 @@ import Header from './Header';
 import EtherService from '../services/EtherService';
 import keccak256 from 'keccak256';
 
-interface BigNumber {
-  _hex: string;
-  _isBigNumber: boolean;
-}
-
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '85%', 
@@ -71,7 +66,7 @@ export default function Space() {
           let bal = parseInt(balance, 16);
           for(let i=0; i<bal; i++){
             etherService.tokenByIndex(userAddress, i.toString())
-              .then((token:BigNumber) => {
+              .then(token => {
                 console.log(token._hex.toString().substring(2))
                 // console.log(token[0])
                 console.log(keccak256(userAddress).toString('hex'))

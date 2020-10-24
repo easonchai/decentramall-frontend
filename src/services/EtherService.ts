@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Provider } from '@ethersproject/providers';
 
 export default class EtherService {
@@ -169,8 +169,8 @@ export default class EtherService {
   public async tokenByIndex(
     address:string,
     index:string
-  ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
+  ): Promise<BigNumber> {
+    return new Promise<BigNumber>(async (resolve, reject) => {
       if(this.isEthereumNodeAvailable()){
         const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
         contract.tokenOfOwnerByIndex(address, index)
