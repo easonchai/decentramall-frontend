@@ -48,8 +48,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
-  const [price, setPrice] = useState("0");
-  const [currentSupply, setCurrentSupply] = useState(0);
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
