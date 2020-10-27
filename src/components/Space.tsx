@@ -1,4 +1,4 @@
-import { Button, makeStyles, Theme, Typography, useTheme, Dialog, DialogTitle, DialogContent, Grid, ButtonBase, Card, CardContent } from '@material-ui/core';
+import { Button, makeStyles, Theme, Typography, Dialog, DialogTitle, DialogContent, Grid, ButtonBase, Card, CardContent } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import EtherService from '../services/EtherService';
@@ -103,6 +103,7 @@ export default function Space() {
   const [selected, setSelected] = React.useState('');
 
   const handleRentOpen = async () => {
+    getAvailableSpace();
     setOpen(true);
   };
 
@@ -154,25 +155,6 @@ export default function Space() {
           }
         )
       }
-
-      let address = "0x31263af02f40Aa9479eCb7e1c890999863b69725";
-      etherService.balanceOf(address)
-        .then(bal => {
-          let balance = parseInt(bal);
-          // Set contract balance
-          setContractBalance(balance);
-
-          // Set list
-          for(let i=0; i<balance; i++){
-            etherService.tokenByIndex(address, i.toString())
-              .then(token => {
-                spaceList.push(token._hex.toString())
-                console.log(token._hex.toString())
-              })
-              .catch(err => console.log(err));
-          }
-        })
-        .catch(err => console.log(err))
     }
     // componentWillUnmount alternative
     return () => {
@@ -225,7 +207,29 @@ export default function Space() {
   }
 
   const getAvailableSpace = async () => {
-    
+    etherService.balanceOf("0x31263af02f40Aa9479eCb7e1c890999863b69725")
+      .then(async bal => {
+        let balance = parseInt(bal);
+        // Set contract balance
+        setContractBalance(balance);
+
+        // Set list
+        let list:string[] = [];
+        for(let i=0; i<balance; i++){
+          let val = await getTokenIdByIndex(i.toString());
+          list.push(val._hex.toString())
+        }
+        setSpaceList(list)
+      })
+      .catch(err => console.log(err))
+  }
+
+  const getTokenIdByIndex = (index: string):Promise<any> => {
+    return new Promise<any>((resolve, reject) => {
+      etherService.tokenByIndex("0x31263af02f40Aa9479eCb7e1c890999863b69725", index)
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    })
   }
 
   const depositSpace = async () => {
