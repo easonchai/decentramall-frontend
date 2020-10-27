@@ -1,4 +1,4 @@
-import { Button, Input, makeStyles, Slider, Typography } from '@material-ui/core';
+import { Button, Input, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 import EtherService from '../services/EtherService';
 

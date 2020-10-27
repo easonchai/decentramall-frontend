@@ -43,6 +43,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '3rem',
     margin: '1rem',
     padding: '1rem 2rem'
+  },
+  spaceOwnerOptions: {
+    display: 'flex',
+    width: '100%',
+    margin: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '2rem'
   }
 }));
 
@@ -118,7 +126,8 @@ export default function Space() {
         </div>
         {
           isOwner ?
-          <span className={classes.newUserOptions}>
+          <span className={classes.spaceOwnerOptions}>
+            <Typography component="h2">{keccak256(userAddress).toString()}</Typography>
             <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
               Deposit Space
             </Button>
