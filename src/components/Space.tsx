@@ -5,6 +5,7 @@ import EtherService from '../services/EtherService';
 import keccak256 from 'keccak256';
 import dai from '../assets/dai.svg';
 import Chipset from './Chipset';
+import bigInt from 'big-integer';
 
 const useStyles = makeStyles((theme: Theme) => ({
   graph: {
@@ -227,6 +228,15 @@ export default function Space() {
       .catch(err => console.log(err))
   }
 
+  const depositSpace = async () => {
+    // Since JS cant handle super huge numbers, we're gonna kill performance.
+    let tokenId = bigInt(keccak256(userAddress).toString('hex'), 16).toString();
+    
+    etherService.deposit(tokenId, "375428", callbackFn)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+  }
+
   return (
     <div>
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
@@ -243,7 +253,7 @@ export default function Space() {
               <Typography component="h4">Status</Typography>
               <Chipset status="unstaked" />
               <span className={classes.spaceOwnerOptions}>
-                <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
+                <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => depositSpace()}>
                   Stake Space
                 </Button>
                 <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => sellSpace()}>
