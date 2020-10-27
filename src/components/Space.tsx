@@ -155,6 +155,7 @@ export default function Space() {
       .then(val => console.log(val))
       .catch((err) => {
         if(err.code === "UNPREDICTABLE_GAS_LIMIT"){
+          console.log("approve")
           approveAmount();
         }
       })

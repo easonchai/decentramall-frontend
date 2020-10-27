@@ -52,6 +52,17 @@ export default function Header(){
     let etherService = EtherService.getInstance();
     const [userAddress, setUserAddress] = useState('');
     
+    const accChangeCallback = (accounts: string[]) => {
+        setUserAddress(accounts[0]);
+    }
+
+    const chainChangeCallback = (chainID: string) => {
+        // TODO: remove the magic number for Rinkeby network/chain id
+        if (chainID !== '3') {
+            console.log("not on ropsten!")
+        }
+    }
+
     useEffect(() => {
         setUserAddress(sessionStorage.getItem('userAddress') || '');
     }, [])
