@@ -65,6 +65,10 @@ export default function Header(){
 
     useEffect(() => {
         setUserAddress(sessionStorage.getItem('userAddress') || '');
+
+        if(etherService.isEthereumNodeAvailable()){
+            etherService.addAllListeners(chainChangeCallback, accChangeCallback);
+        }
     }, [])
 
     const isActive = (href:string) => {
