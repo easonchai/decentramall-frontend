@@ -51,32 +51,10 @@ export default function Header(){
     const classes = useStyles();
     let etherService = EtherService.getInstance();
     const [userAddress, setUserAddress] = useState('');
-    
-    const accChangeCallback = (accounts: string[]) => {
-        setUserAddress(accounts[0]);
-    }
-
-    const chainChangeCallback = (chainID: string) => {
-        // TODO: remove the magic number for Rinkeby network/chain id
-        if (chainID !== '3') {
-            console.log("not on ropsten!")
-        }
-    }
 
     useEffect(() => {
         setUserAddress(sessionStorage.getItem('userAddress') || '');
-
-        if(etherService.isEthereumNodeAvailable()){
-            etherService.addAllListeners(chainChangeCallback, accChangeCallback);
-        }
-
-        // componentWillUnmount alternative
-        return () => {
-            if (etherService.isEthereumNodeAvailable()) {
-                etherService.removeAllListeners();
-            }
-        };
-    }, [])
+    }, [etherService, userAddress])
 
     const isActive = (href:string) => {
         if (href === window.location.pathname){

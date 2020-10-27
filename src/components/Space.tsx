@@ -115,6 +115,7 @@ export default function Space() {
   const accChangeCallback = (accounts: string[]) => {
     setIsOwner(false);
     setUserAddress(accounts[0]);
+    sessionStorage.setItem('userAddress', accounts[0]);
   }
 
   const chainChangeCallback = (chainID: string) => {
