@@ -104,6 +104,7 @@ export default function Space() {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleRentOpen = () => {
+    getContractBalance();
     setOpen(true);
   };
 
@@ -137,10 +138,6 @@ export default function Space() {
           }
         }
       )
-    }
-
-    if(open){
-      getContractBalance();
     }
   },[etherService, userAddress, open])
 
@@ -252,7 +249,7 @@ export default function Space() {
             >
               <DialogTitle className={classes.dialogTitle}>{"Available Spaces To Rent"}</DialogTitle>
               <DialogContent>
-                <Grid container>
+                <Grid container style={{fontSize: '1.8rem'}}>
                   {contractBalance === 0 ?
                     "There are no available spaces to rent!" :
                     spaceList.map(id => {
@@ -266,7 +263,7 @@ export default function Space() {
                             >
                               <CardContent>
                                 <Typography component="h1">
-                                🌌 SPACE #{selected.substring(0, 6) + "..." + selected.substring(selected.length-5, selected.length+1)}
+                                  &#127756; SPACE #{selected.substring(0, 6) + "..." + selected.substring(selected.length-5, selected.length+1)}
                                 </Typography>
                               </CardContent>
                             </ButtonBase>
