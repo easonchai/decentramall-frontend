@@ -188,15 +188,12 @@ export default function Space() {
         setContractBalance(balance);
 
         // Set list
-        // let list: string[] = [];
-        // for(let i=0; i<balance; i++){
-        //   etherService.tokenByIndex(address, i.toString())
-        //     .then(token => list.push(token._hex.toString()))
-        //     .catch(err => console.log(err));
-        // }
-        let list: string[] = ['31263af02f40Aa9479eCb7e1', '9479eCb7e1c890999863b69725', '3af02f40Aa9479eCb7e1c89'
-      ,'31263af02f40Aa9479eCb7e1', '9479eCb7e1c890999863b69725', '3af02f40Aa9479eCb7e1c89','31263af02f40Aa9479eCb7e1', '9479eCb7e1c890999863b69725', '3af02f40Aa9479eCb7e1c89'
-    ,'31263af02f40Aa9479eCb7e1', '9479eCb7e1c890999863b69725', '3af02f40Aa9479eCb7e1c89','31263af02f40Aa9479eCb7e1', '9479eCb7e1c890999863b69725', '3af02f40Aa9479eCb7e1c89'];
+        let list: string[] = [];
+        for(let i=0; i<balance; i++){
+          etherService.tokenByIndex(address, i.toString())
+            .then(token => list.push(token._hex.toString()))
+            .catch(err => console.log(err));
+        }
         setSpaceList(list);
       })
       .catch(err => console.log(err))
@@ -254,17 +251,17 @@ export default function Space() {
               <DialogTitle className={classes.dialogTitle}>{"Available Spaces To Rent"}</DialogTitle>
               <DialogContent>
                 <Grid container style={{fontSize: '1.8rem'}}>
-                  {contractBalance !== 0 ?
+                  {contractBalance === 0 ?
                     "There are no available spaces to rent!" :
                     spaceList.map(id => {
                       return(
                         <Grid item xs={6} style={{padding: '3rem'}}>
-                          <Card style={{padding: '2rem'}}>
+                          <Card style={{minHeight: '100px', display: 'flex', alignItems: 'center'}}>
                             <ButtonBase
                               focusRipple
                               key={id}
                               onClick={() => setSelected(id)}
-                              style={{width: '100%'}}
+                              style={{width: '100%', minHeight: '100px'}}
                             >
                               <CardContent style={{width: '100%'}}>
                                 <Typography component="h1" style={{fontSize: '2rem', fontWeight:'bold'}}>
