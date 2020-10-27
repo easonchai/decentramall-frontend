@@ -158,7 +158,7 @@ export default function Space() {
               <Typography component="h3">Unstaked</Typography>
               <span className={classes.spaceOwnerOptions}>
                 <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
-                  Deposit Space
+                  Stake Space
                 </Button>
                 <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
                   Sell Space
