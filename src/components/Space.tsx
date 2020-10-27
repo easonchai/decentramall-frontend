@@ -182,15 +182,18 @@ export default function Space() {
   }
 
   const getContractBalance = async () => {
-    etherService.balanceOf("0x31263af02f40Aa9479eCb7e1c890999863b69725")
+    let address = "0x31263af02f40Aa9479eCb7e1c890999863b69725";
+    etherService.balanceOf(address)
       .then(bal => {
         let balance = parseInt(bal);
         // Set contract balance
         setContractBalance(balance);
 
         // Set list
+        let list: string[] = [];
         for(let i=0; i<balance; i++){
-          
+          etherService.tokenByIndex(address, i.toString())
+            .then(token => list.push(token._hex.toString()))
         }
       })
       .catch(err => console.log(err))
