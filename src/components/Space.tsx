@@ -91,6 +91,7 @@ export default function Space() {
   const [currentSupply, setCurrentSupply] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [tokenId, setTokenId] = useState('');
+  const [contractBalance, setContractBalance] = useState(0);
 
   useEffect(() => {
     // First, get the current total supply
@@ -157,6 +158,12 @@ export default function Space() {
     etherService.sell(tokenId, callbackFn)
       .then(val => console.log("Success sell", val))
       .catch(err => console.log("Fail sell", err))
+  }
+
+  const getContractBalance = async () => {
+    etherService.balanceOf("0x31263af02f40Aa9479eCb7e1c890999863b69725")
+      .then(bal => setContractBalance(parseInt(bal)))
+      .catch(err => console.log(err))
   }
 
   return (
