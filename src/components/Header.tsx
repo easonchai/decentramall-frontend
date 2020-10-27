@@ -50,12 +50,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Header(){
     const classes = useStyles();
     let etherService = EtherService.getInstance();
-    let userAddress = etherService.getUserAddress();
-    const [connected, setConnected] = useState(false);
+    const [userAddress, setUserAddress] = useState('');
     
     useEffect(() => {
-        console.log(etherService.getUserAddress())
-        etherService.getUserAddress() ? setConnected(true) : console.log("Please connect your wallet!")
+        const address = etherService.getUserAddress();
+        if(address !== null){
+            sessionStorage.setItem('userAddress', address);
+        }
     }, [etherService])
 
     const isActive = (href:string) => {
@@ -81,7 +82,7 @@ export default function Header(){
             </ul>
             <div className={classes.connect}>
                 {
-                connected ?
+                userAddress ?
                     <Box component="div" display="flex" alignItems="center" justifyContent="flex-end">
                         <Blockies seed={userAddress} />
                         <Box component="div" display="flex" flexDirection="column" padding="10px" alignItems="flex-end">
@@ -130,7 +131,7 @@ export default function Header(){
                         onConnect={(provider: any) => {
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             const web3 = new Web3(provider); // add provider to web3
-                            setConnected(true);
+                            sessionStorage.setItem('userAddress', etherService.getUserAddress());
                         }}
                         onClose={() => {
                             console.log("Web3Connect Modal Closed"); // modal has closed
