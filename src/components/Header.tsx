@@ -53,11 +53,8 @@ export default function Header(){
     const [userAddress, setUserAddress] = useState('');
     
     useEffect(() => {
-        const address = etherService.getUserAddress();
-        if(address !== null){
-            sessionStorage.setItem('userAddress', address);
-        }
-    }, [etherService])
+        setUserAddress(sessionStorage.getItem('userAddress') || '');
+    }, [])
 
     const isActive = (href:string) => {
         if (href === window.location.pathname){
@@ -131,7 +128,9 @@ export default function Header(){
                         onConnect={(provider: any) => {
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             const web3 = new Web3(provider); // add provider to web3
-                            sessionStorage.setItem('userAddress', etherService.getUserAddress());
+                            const address = etherService.getUserAddress();
+                            sessionStorage.setItem('userAddress', address);
+                            setUserAddress(address);
                         }}
                         onClose={() => {
                             console.log("Web3Connect Modal Closed"); // modal has closed
