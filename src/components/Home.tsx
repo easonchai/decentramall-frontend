@@ -1,7 +1,5 @@
 import { Grid, makeStyles, Theme, Typography, IconButton, Paper, InputBase } from '@material-ui/core';
 import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
 import StoreCard from './StoreCard';
 import SearchIcon from '@material-ui/icons/Search';
 

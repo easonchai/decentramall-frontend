@@ -1,15 +1,10 @@
 import { Button, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
-import Header from './Header';
 import EtherService from '../services/EtherService';
 import keccak256 from 'keccak256';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    width: '85%', 
-    margin: 'auto', 
-  },
   graph: {
     width: '50%',
     margin: 'auto',
@@ -118,8 +113,7 @@ export default function Space() {
   }
 
   return (
-    <div className={classes.root}>
-        <Header />
+    <div>
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
         <div className={classes.graph}>
           <Graph />
