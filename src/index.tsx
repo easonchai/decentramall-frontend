@@ -37,7 +37,7 @@ const THEME = createMuiTheme({
 ReactDOM.render(
   <MuiThemeProvider theme={THEME}>
     <BrowserRouter>
-      <div>
+      <div style={{width:'85%', margin:'auto'}}>
         <Header />
         <Switch>
           <Route path="/admin" component={Admin} />

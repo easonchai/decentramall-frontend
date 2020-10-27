@@ -6,10 +6,6 @@ import StoreCard from './StoreCard';
 import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme:Theme) => ({
-    root: {
-      width: '85%', 
-      margin: 'auto', 
-    },
     bigText: {
       fontSize: '5rem',
       fontWeight: 'bold',
@@ -49,8 +45,7 @@ const useStyles = makeStyles((theme:Theme) => ({
 export default function Home(){
     const classes = useStyles();
     return(
-        <div className={classes.root}>
-          <Header />
+        <div>
           <div className={classes.bigTextContainer}>
             <div>
               <Typography component="h2" className={classes.bigText}>Your One Stop</Typography>
@@ -89,7 +84,6 @@ export default function Home(){
               <StoreCard />
             </Grid>
           </Grid>
-          <Footer />
         </div>
     )
 }
