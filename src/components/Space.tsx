@@ -1,4 +1,4 @@
-import { Button, makeStyles, Theme, Typography, useMediaQuery, useTheme, Dialog, DialogActions, DialogTitle, DialogContent, Grid } from '@material-ui/core';
+import { Button, makeStyles, Theme, Typography, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, Grid, ButtonBase, Card, CardContent } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import EtherService from '../services/EtherService';
@@ -99,6 +99,7 @@ export default function Space() {
   const [contractBalance, setContractBalance] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [spaceList, setSpaceList] = React.useState<string[]>([]);
+  const [selected, setSelected] = React.useState('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -254,7 +255,25 @@ export default function Space() {
                 <Grid container>
                   {contractBalance === 0 ?
                     "There are no available spaces to rent!" :
-                    
+                    spaceList.map(id => {
+                      return(
+                        <Grid item xs={6}>
+                          <Card>
+                            <ButtonBase
+                              focusRipple
+                              key={id}
+                              onClick={() => setSelected(id)}
+                            >
+                              <CardContent>
+                                <Typography component="h1">
+                                🌌 SPACE #{selected.substring(0, 6) + "..." + selected.substring(selected.length-5, selected.length+1)}
+                                </Typography>
+                              </CardContent>
+                            </ButtonBase>
+                          </Card>
+                        </Grid>
+                      )
+                    })
                   }
                 </Grid>
               </DialogContent>
