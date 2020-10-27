@@ -98,7 +98,7 @@ export default function Space() {
   const [tokenId, setTokenId] = useState('');
   const [contractBalance, setContractBalance] = useState(0);
   const [open, setOpen] = React.useState(false);
-  const [spaceList, setSpaceList] = React.useState<any>('');
+  const [spaceList, setSpaceList] = React.useState<string[]>([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -194,7 +194,9 @@ export default function Space() {
         for(let i=0; i<balance; i++){
           etherService.tokenByIndex(address, i.toString())
             .then(token => list.push(token._hex.toString()))
+            .catch(err => console.log(err));
         }
+        setSpaceList(list);
       })
       .catch(err => console.log(err))
   }
