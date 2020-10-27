@@ -1,5 +1,5 @@
 import { Box, Link, makeStyles, Theme, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Blockies from 'react-blockies';
 import Web3Connect from "web3connect";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -52,6 +52,11 @@ export default function Header(){
     let etherService = EtherService.getInstance();
     let userAddress = etherService.getUserAddress();
     const [connected, setConnected] = useState(false);
+    
+    useEffect(() => {
+        console.log(etherService.getUserAddress())
+        etherService.getUserAddress() ? setConnected(true) : console.log("Please connect your wallet!")
+    }, [etherService])
 
     const isActive = (href:string) => {
         if (href === window.location.pathname){
