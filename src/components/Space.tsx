@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: '2rem'
+    marginTop: '5rem'
   },
   spaceDetails: {
     display: 'flex',
@@ -66,11 +66,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: '2rem',
     alignItems: 'center',
     '& h2': {
+      color: theme.palette.secondary.main,
       fontSize: '2rem',
       fontWeight: 'bold',
       marginTop: '1rem'
     },
+    '& h4': {
+      color: theme.palette.secondary.main,
+      fontSize: '2rem',
+      marginTop: '1rem'
+    },
     '& h3': {
+      color: theme.palette.secondary.main,
       fontSize: '2rem',
       fontWeight: 'lighter'
     }
@@ -83,6 +90,7 @@ export default function Space() {
   let userAddress = etherService.getUserAddress();
   const [currentSupply, setCurrentSupply] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
+  const [tokenId, setTokenId] = useState('');
 
   useEffect(() => {
     // First, get the current total supply
@@ -100,6 +108,7 @@ export default function Space() {
               .then(token => {
                 if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
                   // console.log("Owner")
+                  setTokenId(token._hex.toString());
                   setIsOwner(true);
                 } 
                 // else {
@@ -144,6 +153,12 @@ export default function Space() {
       ).catch(err => console.log("Fail get price", err))
   }
 
+  const sellSpace = async () => {
+    etherService.sell(tokenId, callbackFn)
+      .then(val => console.log("Success sell", val))
+      .catch(err => console.log("Fail sell", err))
+  }
+
   return (
     <div>
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
@@ -155,8 +170,9 @@ export default function Space() {
           isOwner ?
             <section className={classes.spaceDetails}>
               <Typography component="h2">Space Details</Typography>
-              <Typography component="h3">{keccak256(userAddress).toString('hex')}</Typography>
-              <Typography component="h2">Status</Typography>
+              <Typography component="h4">Token ID</Typography>
+              <Typography component="h3">{tokenId}</Typography>
+              <Typography component="h4">Status</Typography>
               <Chipset status="unstaked" />
               <span className={classes.spaceOwnerOptions}>
                 <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
