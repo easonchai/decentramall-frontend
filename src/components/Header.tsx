@@ -126,16 +126,22 @@ export default function Header(){
                             // }
                         }}
                         onConnect={(provider: any) => {
+                            console.log("ping")
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            const web3 = new Web3(provider); // add provider to web3
-                            const address = etherService.getUserAddress();
-                            sessionStorage.setItem('userAddress', address);
-                            setUserAddress(address);
+                            try {
+                                const web3 = new Web3(provider); // add provider to web3
+                                const address = etherService.getUserAddress();
+                                sessionStorage.setItem('userAddress', address);
+                                setUserAddress(address);
+                            } catch (err) {
+                                console.log(err)
+                            }
+                            
                         }}
                         onClose={() => {
                             console.log("Web3Connect Modal Closed"); // modal has closed
                         }}
-                        />
+                    />
                 }
             </div>
         </nav>
