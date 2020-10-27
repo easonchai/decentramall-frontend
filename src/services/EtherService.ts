@@ -217,7 +217,7 @@ export default class EtherService {
 
         // Send TX
         contract
-          .approve(this.daiAddress, amount)
+          .approve(this.decentramallAddress, amount)
           .then(
               (success: any) => resolve(success),
               (reason: any) => reject(reason)
