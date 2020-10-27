@@ -178,7 +178,7 @@ export default function Space() {
                 <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
                   Stake Space
                 </Button>
-                <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
+                <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => sellSpace()}>
                   Sell Space
                 </Button>
               </span>
