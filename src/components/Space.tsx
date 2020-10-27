@@ -60,8 +60,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   spaceDetails: {
     display: 'flex',
-    fontSize: '2rem',
-    fontWeight: 'bold'
+    flexDirection: 'column',
+    textAlign: 'center',
+    margin: '2rem',
+    '& h2': {
+      fontSize: '2rem',
+      fontWeight: 'bold',
+      marginTop: '1rem'
+    },
+    '& h3': {
+      fontSize: '2rem',
+      fontWeight: 'lighter'
+    }
   }
 }));
 
@@ -141,19 +151,20 @@ export default function Space() {
         </Typography>
         {
           isOwner ?
-          <span className={classes.spaceOwnerOptions}>
             <section className={classes.spaceDetails}>
               <Typography component="h2">Space Details</Typography>
-              <Typography component="h2">{keccak256(userAddress).toString('hex')}</Typography>
-              <Typography component="h2">{keccak256(userAddress).toString('hex')}</Typography>
+              <Typography component="h3">{keccak256(userAddress).toString('hex')}</Typography>
+              <Typography component="h2">Status</Typography>
+              <Typography component="h3">Unstaked</Typography>
+              <span className={classes.spaceOwnerOptions}>
+                <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
+                  Deposit Space
+                </Button>
+                <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
+                  Sell Space
+                </Button>
+              </span>
             </section>
-            <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
-              Deposit Space
-            </Button>
-            <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
-              Sell Space
-            </Button>
-          </span>
           :
           <>
             <div className={classes.graph}>
