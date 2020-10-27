@@ -84,39 +84,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-function RentDialog() {
-  const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open responsive dialog
-      </Button>
-      <Dialog
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">{"Available Spaces To Rent"}</DialogTitle>
-        <DialogContent>
-          
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
-
 export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
@@ -125,6 +92,17 @@ export default function Space() {
   const [isOwner, setIsOwner] = useState(false);
   const [tokenId, setTokenId] = useState('');
   const [contractBalance, setContractBalance] = useState(0);
+  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleRentOpen = () => {
+    setOpen(true);
+  };
+
+  const handleRentClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     // First, get the current total supply
@@ -232,11 +210,30 @@ export default function Space() {
               <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
                 Buy Space
               </Button>
-              <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
+              <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => handleRentOpen()}>
                 Rent Space
               </Button>
             </span>
           </>
+        }
+        {
+          open &&
+          <div>
+            <Button variant="outlined" color="primary" onClick={handleRentOpen}>
+              Open responsive dialog
+            </Button>
+            <Dialog
+              fullScreen={fullScreen}
+              open={open}
+              onClose={handleRentClose}
+              aria-labelledby="responsive-dialog-title"
+            >
+              <DialogTitle id="responsive-dialog-title">{"Available Spaces To Rent"}</DialogTitle>
+              <DialogContent>
+                
+              </DialogContent>
+            </Dialog>
+          </div>
         }
     </div>
   );
