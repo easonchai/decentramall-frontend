@@ -1,4 +1,4 @@
-import { Button, makeStyles, Theme, Typography, useMediaQuery, useTheme, Dialog, DialogActions, DialogTitle, DialogContent } from '@material-ui/core';
+import { Button, makeStyles, Theme, Typography, useMediaQuery, useTheme, Dialog, DialogActions, DialogTitle, DialogContent, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import EtherService from '../services/EtherService';
@@ -81,6 +81,11 @@ const useStyles = makeStyles((theme: Theme) => ({
       fontSize: '2rem',
       fontWeight: 'lighter'
     }
+  },
+  dialogTitle: {
+    '& h2': {
+      fontSize: '2rem'
+    }
   }
 }));
 
@@ -93,6 +98,7 @@ export default function Space() {
   const [tokenId, setTokenId] = useState('');
   const [contractBalance, setContractBalance] = useState(0);
   const [open, setOpen] = React.useState(false);
+  const [spaceList, setSpaceList] = React.useState<any>('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -131,7 +137,11 @@ export default function Space() {
         }
       )
     }
-  },[etherService, userAddress])
+
+    if(open){
+      getContractBalance();
+    }
+  },[etherService, userAddress, open])
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
@@ -173,7 +183,16 @@ export default function Space() {
 
   const getContractBalance = async () => {
     etherService.balanceOf("0x31263af02f40Aa9479eCb7e1c890999863b69725")
-      .then(bal => setContractBalance(parseInt(bal)))
+      .then(bal => {
+        let balance = parseInt(bal);
+        // Set contract balance
+        setContractBalance(balance);
+
+        // Set list
+        for(let i=0; i<balance; i++){
+          
+        }
+      })
       .catch(err => console.log(err))
   }
 
@@ -218,19 +237,21 @@ export default function Space() {
         }
         {
           open &&
-          <div>
-            <Button variant="outlined" color="primary" onClick={handleRentOpen}>
-              Open responsive dialog
-            </Button>
+          <div style={{fontSize: '2rem'}}>
             <Dialog
               fullScreen={fullScreen}
               open={open}
               onClose={handleRentClose}
-              aria-labelledby="responsive-dialog-title"
+              aria-labelledby="rent-dialog"
             >
-              <DialogTitle id="responsive-dialog-title">{"Available Spaces To Rent"}</DialogTitle>
+              <DialogTitle className={classes.dialogTitle}>{"Available Spaces To Rent"}</DialogTitle>
               <DialogContent>
-                
+                <Grid container>
+                  {contractBalance === 0 ?
+                    "There are no available spaces to rent!" :
+                    
+                  }
+                </Grid>
               </DialogContent>
             </Dialog>
           </div>
