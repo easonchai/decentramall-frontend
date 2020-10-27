@@ -10,10 +10,12 @@ interface Props {
 
 export default function Chipset(props: Props){
     return(
-        props.status === "unstaked" ?
-            <Chip icon={<WeekendIcon />} /> :
-                props.status === "staked" ?
-                    <Chip icon={<HomeWorkRoundedIcon />} /> :
-                        <Chip icon={<BeenhereRoundedIcon />} />
+        <Chip icon={
+            props.status === "unstaked" ?
+                <WeekendIcon /> :
+                    props.status === "staked" ?
+                        <HomeWorkRoundedIcon /> :
+                            <BeenhereRoundedIcon />
+        } label={props.status.toUpperCase()}/> 
     )
 }
