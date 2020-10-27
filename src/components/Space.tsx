@@ -4,6 +4,7 @@ import Graph from './Graph';
 import EtherService from '../services/EtherService';
 import keccak256 from 'keccak256';
 import dai from '../assets/dai.svg';
+import Chipset from './Chipset';
 
 const useStyles = makeStyles((theme: Theme) => ({
   graph: {
@@ -63,6 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     textAlign: 'center',
     margin: '2rem',
+    alignItems: 'center',
     '& h2': {
       fontSize: '2rem',
       fontWeight: 'bold',
@@ -155,7 +157,7 @@ export default function Space() {
               <Typography component="h2">Space Details</Typography>
               <Typography component="h3">{keccak256(userAddress).toString('hex')}</Typography>
               <Typography component="h2">Status</Typography>
-              <Typography component="h3">Unstaked</Typography>
+              <Chipset status="unstaked" />
               <span className={classes.spaceOwnerOptions}>
                 <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
                   Stake Space
