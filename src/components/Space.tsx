@@ -113,7 +113,7 @@ export default function Space() {
   };
 
   const accChangeCallback = (accounts: string[]) => {
-    console.log(accounts[0])
+    setIsOwner(false);
     setUserAddress(accounts[0]);
   }
 
@@ -146,9 +146,10 @@ export default function Space() {
                     setTokenId(token._hex.toString());
                     setIsOwner(true);
                   } 
-                  // else {
-                  //   console.log("not owner")
-                  // }
+                  else {
+                    console.log("not owner")
+                    setIsOwner(false);
+                  }
                 })
             }
           }
