@@ -126,16 +126,11 @@ export default function Header(){
                             // }
                         }}
                         onConnect={(provider: any) => {
-                            console.log("ping")
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            try {
-                                const web3 = new Web3(provider); // add provider to web3
-                                const address = etherService.getUserAddress();
-                                sessionStorage.setItem('userAddress', address);
-                                setUserAddress(address);
-                            } catch (err) {
-                                console.log(err)
-                            }
+                            const web3 = new Web3(provider); // add provider to web3
+                            const address = etherService.getUserAddress();
+                            sessionStorage.setItem('userAddress', address);
+                            setUserAddress(address);
                             
                         }}
                         onClose={() => {

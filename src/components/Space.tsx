@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import EtherService from '../services/EtherService';
 import keccak256 from 'keccak256';
+import dai from '../assets/dai.svg';
 
 const useStyles = makeStyles((theme: Theme) => ({
   graph: {
@@ -16,6 +17,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.secondary.main,
     fontSize: '2rem',
     marginTop: '3rem'
+  },
+  subheading: {
+    textAlign: 'center',
+    color: theme.palette.secondary.main,
+    fontSize: '1.8rem',
+    marginTop: '1rem',
+    margin: 'auto',
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
   },
   newUserOptions: {
     // #429AFF
@@ -46,6 +57,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '2rem'
+  },
+  spaceDetails: {
+    display: 'flex',
+    fontSize: '2rem',
+    fontWeight: 'bold'
   }
 }));
 
@@ -82,11 +98,15 @@ export default function Space() {
         }
       )
     }
-    
   },[etherService, userAddress])
 
   const callbackFn = (result: any) => {
     console.log("cb fn ", result);
+  }
+
+  const getPrice = () => {
+    let x = currentSupply + 1;
+    return 2500*((x-600)/Math.sqrt(100000+(x-600)**2) + 1);
   }
 
   const buySpace = () => {
@@ -115,13 +135,18 @@ export default function Space() {
   return (
     <div>
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
-        <div className={classes.graph}>
-          <Graph />
-        </div>
+        <Typography component="h2" className={classes.subheading}>
+          <img src={dai} height="20px" alt="dai" style={{margin: '0.5rem'}} />
+          {getPrice()} DAI
+        </Typography>
         {
           isOwner ?
           <span className={classes.spaceOwnerOptions}>
-            <Typography component="h2">{keccak256(userAddress).toString()}</Typography>
+            <section className={classes.spaceDetails}>
+              <Typography component="h2">Space Details</Typography>
+              <Typography component="h2">{keccak256(userAddress).toString('hex')}</Typography>
+              <Typography component="h2">{keccak256(userAddress).toString('hex')}</Typography>
+            </section>
             <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
               Deposit Space
             </Button>
@@ -130,14 +155,19 @@ export default function Space() {
             </Button>
           </span>
           :
-          <span className={classes.newUserOptions}>
-            <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
-              Buy Space
-            </Button>
-            <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
-              Rent Space
-            </Button>
-          </span>
+          <>
+            <div className={classes.graph}>
+              <Graph />
+            </div>
+            <span className={classes.newUserOptions}>
+              <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => buySpace()}>
+                Buy Space
+              </Button>
+              <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => approveAmount()}>
+                Rent Space
+              </Button>
+            </span>
+          </>
         }
     </div>
   );
