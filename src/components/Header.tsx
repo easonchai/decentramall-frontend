@@ -69,6 +69,13 @@ export default function Header(){
         if(etherService.isEthereumNodeAvailable()){
             etherService.addAllListeners(chainChangeCallback, accChangeCallback);
         }
+
+        // componentWillUnmount alternative
+        return () => {
+            if (etherService.isEthereumNodeAvailable()) {
+                etherService.removeAllListeners();
+            }
+        };
     }, [])
 
     const isActive = (href:string) => {

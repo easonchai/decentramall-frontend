@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Space() {
   const classes = useStyles();
   let etherService = EtherService.getInstance();
-  let userAddress = etherService.getUserAddress();
+  const [userAddress, setUserAddress] = useState('');
   const [currentSupply, setCurrentSupply] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [tokenId, setTokenId] = useState('');
@@ -112,33 +112,55 @@ export default function Space() {
     setOpen(false);
   };
 
-  useEffect(() => {
-    // First, get the current total supply
-    etherService.totalSupply()
-      .then(val => setCurrentSupply(parseInt(val, 16)))
-      .catch(err => console.log("Fail get supply", err));
+  const accChangeCallback = (accounts: string[]) => {
+    console.log(accounts[0])
+    setUserAddress(accounts[0]);
+  }
 
-    // Then check if this person already bought a SPACE token
-    if(userAddress){
-      etherService.balanceOf(userAddress).then(
-        balance => {
-          let bal = parseInt(balance, 16);
-          for(let i=0; i<bal; i++){
-            etherService.tokenByIndex(userAddress, i.toString())
-              .then(token => {
-                if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
-                  // console.log("Owner")
-                  setTokenId(token._hex.toString());
-                  setIsOwner(true);
-                } 
-                // else {
-                //   console.log("not owner")
-                // }
-              })
+  const chainChangeCallback = (chainID: string) => {
+      // TODO: remove the magic number for Rinkeby network/chain id
+      if (chainID !== '3') {
+          console.log("not on ropsten!")
+      }
+  }
+
+  useEffect(() => {
+    if(etherService.isEthereumNodeAvailable()){
+      etherService.addAllListeners(chainChangeCallback, accChangeCallback);
+
+      // First, get the current total supply
+      etherService.totalSupply()
+        .then(val => setCurrentSupply(parseInt(val, 16)))
+        .catch(err => console.log("Fail get supply", err));
+
+      // Then check if this person already bought a SPACE token
+      if(userAddress){
+        etherService.balanceOf(userAddress).then(
+          balance => {
+            let bal = parseInt(balance, 16);
+            for(let i=0; i<bal; i++){
+              etherService.tokenByIndex(userAddress, i.toString())
+                .then(token => {
+                  if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
+                    // console.log("Owner")
+                    setTokenId(token._hex.toString());
+                    setIsOwner(true);
+                  } 
+                  // else {
+                  //   console.log("not owner")
+                  // }
+                })
+            }
           }
-        }
-      )
+        )
+      }
     }
+    // componentWillUnmount alternative
+    return () => {
+      if (etherService.isEthereumNodeAvailable()) {
+          etherService.removeAllListeners();
+      }
+    };
   },[etherService, userAddress, open])
 
   const callbackFn = (result: any) => {
@@ -152,7 +174,10 @@ export default function Space() {
 
   const buySpace = () => {
     etherService.buy(callbackFn)
-      .then(val => console.log(val))
+      .then(val => {
+        console.log(val);
+        setIsOwner(true);
+      })
       .catch((err) => {
         if(err.code === "UNPREDICTABLE_GAS_LIMIT"){
           console.log("approve")
