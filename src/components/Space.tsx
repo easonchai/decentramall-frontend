@@ -1,4 +1,4 @@
-import { Button, makeStyles, Theme, Typography } from '@material-ui/core';
+import { Button, makeStyles, Theme, Typography, useMediaQuery, useTheme, Dialog, DialogActions, DialogTitle, DialogContent } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import EtherService from '../services/EtherService';
@@ -83,6 +83,39 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
   }
 }));
+
+function RentDialog() {
+  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div>
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        Open responsive dialog
+      </Button>
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Available Spaces To Rent"}</DialogTitle>
+        <DialogContent>
+          
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
 
 export default function Space() {
   const classes = useStyles();
