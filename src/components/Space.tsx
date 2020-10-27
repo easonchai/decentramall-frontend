@@ -1,4 +1,4 @@
-import { Button, makeStyles, Theme, Typography, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, Grid, ButtonBase, Card, CardContent } from '@material-ui/core';
+import { Button, makeStyles, Theme, Typography, useTheme, Dialog, DialogTitle, DialogContent, Grid, ButtonBase, Card, CardContent } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Graph from './Graph';
 import EtherService from '../services/EtherService';
@@ -101,11 +101,8 @@ export default function Space() {
   const [open, setOpen] = React.useState(false);
   const [spaceList, setSpaceList] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState('');
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleRentOpen = () => {
-    getContractBalance();
+  const handleRentOpen = async () => {
     setOpen(true);
   };
 
@@ -157,6 +154,25 @@ export default function Space() {
           }
         )
       }
+
+      let address = "0x31263af02f40Aa9479eCb7e1c890999863b69725";
+      etherService.balanceOf(address)
+        .then(bal => {
+          let balance = parseInt(bal);
+          // Set contract balance
+          setContractBalance(balance);
+
+          // Set list
+          for(let i=0; i<balance; i++){
+            etherService.tokenByIndex(address, i.toString())
+              .then(token => {
+                spaceList.push(token._hex.toString())
+                console.log(token._hex.toString())
+              })
+              .catch(err => console.log(err));
+          }
+        })
+        .catch(err => console.log(err))
     }
     // componentWillUnmount alternative
     return () => {
@@ -208,28 +224,11 @@ export default function Space() {
       .catch(err => console.log("Fail sell", err))
   }
 
-  const getContractBalance = async () => {
-    let address = "0x31263af02f40Aa9479eCb7e1c890999863b69725";
-    etherService.balanceOf(address)
-      .then(bal => {
-        let balance = parseInt(bal);
-        // Set contract balance
-        setContractBalance(balance);
-
-        // Set list
-        let list: string[] = [];
-        for(let i=0; i<balance; i++){
-          etherService.tokenByIndex(address, i.toString())
-            .then(token => list.push(token._hex.toString()))
-            .catch(err => console.log(err));
-        }
-        setSpaceList(list);
-      })
-      .catch(err => console.log(err))
+  const getAvailableSpace = async () => {
+    
   }
 
   const depositSpace = async () => {
-    // Since JS cant handle super huge numbers, we're gonna kill performance.
     let tokenId = bigInt(keccak256(userAddress).toString('hex'), 16).toString();
     
     etherService.deposit(tokenId, "375428", callbackFn)
