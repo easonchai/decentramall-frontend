@@ -152,17 +152,16 @@ export default function Space() {
                     setIsOwner(true);
                   } 
                   else {
-                    console.log("not owner")
-                    setIsOwner(false);
-                    // Check if this is staked
-                    etherService.isStaked(id)
-                    .then(res => console.log(res))
-                    .catch(err => console.log(err))
+                    console.log("not owner") 
                   }
                 })
             }
           }
         )
+        // Check if this is staked
+        etherService.isStaked(id)
+          .then(res => console.log("res", res))
+          .catch(err => setIsOwner(false))
       }
     }
     // componentWillUnmount alternative

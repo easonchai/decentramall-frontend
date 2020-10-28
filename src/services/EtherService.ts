@@ -194,7 +194,12 @@ export default class EtherService {
         const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
         contract.ownerOf(tokenId)
           .then(
-            (success: any) => resolve(success),
+            (success: any) => {
+              if(success === this.decentramallAddress){
+                resolve(true);
+              }
+              resolve(false);
+            },
             (reason: any) => reject(reason)
           )
           .catch((error: any) => reject(error.message));
