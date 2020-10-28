@@ -53,7 +53,8 @@ export default class EtherService {
       'function changeDaiAddress(address newDai) public',
       'function changeAdmin(address newAdmin) public',
       'function balanceOf(address owner) public view returns (uint256)',
-      'function tokenOfOwnerByIndex(address owner, uint256 index) public view returns (uint256)'
+      'function tokenOfOwnerByIndex(address owner, uint256 index) public view returns (uint256)',
+      'function ownerOf(uint256 tokenId) public view returns (address)'
     ];
 
     this.daiABI = [
@@ -181,6 +182,24 @@ export default class EtherService {
           .catch((error: any) => reject(error.message));
       } else {
         reject('Please install MetaMask to interact with Ethereum blockchain.')
+      }
+    })
+  }
+
+  public async isStaked(
+    tokenId: string
+  ): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      if(this.isEthereumNodeAvailable()){
+        const contract = new ethers.Contract(this.decentramallAddress, this.decentramallABI, this.signer);
+        contract.ownerOf(tokenId)
+          .then(
+            (success: any) => resolve(success),
+            (reason: any) => reject(reason)
+          )
+          .catch((error: any) => reject(error.message));
+      } else {
+        reject('Please install Metamask to interact with Ethereum blockchain.')
       }
     })
   }

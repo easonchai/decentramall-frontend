@@ -100,6 +100,7 @@ export default function Space() {
   const [contractBalance, setContractBalance] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [spaceList, setSpaceList] = React.useState<string[]>([]);
+  const [hexTokenId, setHexTokenId] = useState('');
   const [isStaked, setIsStaked] = useState(false);
 
   const handleRentOpen = async () => {
@@ -135,13 +136,15 @@ export default function Space() {
 
       // Then check if this person already bought a SPACE token
       if(userAddress){
+        setHexTokenId(keccak256(userAddress).toString('hex'));
+
         etherService.balanceOf(userAddress).then(
           balance => {
             let bal = parseInt(balance, 16);
             for(let i=0; i<bal; i++){
               etherService.tokenByIndex(userAddress, i.toString())
                 .then(token => {
-                  if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
+                  if(token._hex.toString().substring(2) === hexTokenId){
                     // console.log("Owner")
                     let tokenId = bigInt(token._hex.toString().substring(2), 16).toString();
                     setTokenId(tokenId);
@@ -278,7 +281,7 @@ export default function Space() {
             <section className={classes.spaceDetails}>
               <Typography component="h2">Space Details</Typography>
               <Typography component="h4">Token ID</Typography>
-              <Typography component="h3">{keccak256(userAddress).toString('hex')}</Typography>
+              <Typography component="h3">{hexTokenId}</Typography>
               <Typography component="h4">Status</Typography>
               <Chipset status="unstaked" />
               <span className={classes.spaceOwnerOptions}>
