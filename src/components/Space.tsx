@@ -100,7 +100,6 @@ export default function Space() {
   const [contractBalance, setContractBalance] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [spaceList, setSpaceList] = React.useState<string[]>([]);
-  const [selected, setSelected] = React.useState('');
 
   const handleRentOpen = async () => {
     getAvailableSpace();
