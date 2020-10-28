@@ -100,6 +100,7 @@ export default function Space() {
   const [contractBalance, setContractBalance] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [spaceList, setSpaceList] = React.useState<string[]>([]);
+  const [isStaked, setIsStaked] = useState(false);
 
   const handleRentOpen = async () => {
     getAvailableSpace();
@@ -142,8 +143,11 @@ export default function Space() {
                 .then(token => {
                   if(token._hex.toString().substring(2) === keccak256(userAddress).toString('hex')){
                     // console.log("Owner")
-                    setTokenId(token._hex.toString());
+                    let tokenId = bigInt(token._hex.toString().substring(2), 16).toString();
+                    setTokenId(tokenId);
                     setIsOwner(true);
+
+
                   } 
                   else {
                     console.log("not owner")
@@ -246,19 +250,13 @@ export default function Space() {
     })
   }
 
-  const depositSpace = async () => {
-    let tokenId = bigInt(keccak256(userAddress).toString('hex'), 16).toString();
-    
+  const depositSpace = async () => {    
     etherService.deposit(tokenId, "375428", callbackFn)
       .then(res => console.log(res))
       .catch(err => console.log(err))
   }
 
   const rentSpace = async (hexCode: string, duration: number) => {
-    let cleanedHex = hexCode.substring(2);
-    let tokenId = bigInt(cleanedHex, 16).toString();
-    console.log(tokenId)
-    console.log(duration)
     etherService.rent(tokenId, "random-uri", duration.toString(), callbackFn)
       .then(res => console.log("success rent: ", res))
       .catch((err) => {
@@ -280,7 +278,7 @@ export default function Space() {
             <section className={classes.spaceDetails}>
               <Typography component="h2">Space Details</Typography>
               <Typography component="h4">Token ID</Typography>
-              <Typography component="h3">{tokenId}</Typography>
+              <Typography component="h3">{keccak256(userAddress).toString('hex')}</Typography>
               <Typography component="h4">Status</Typography>
               <Chipset status="unstaked" />
               <span className={classes.spaceOwnerOptions}>
