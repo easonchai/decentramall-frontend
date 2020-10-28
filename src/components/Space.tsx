@@ -160,7 +160,7 @@ export default function Space() {
         )
         // Check if this is staked
         etherService.isStaked(id)
-          .then(res => console.log("res", res))
+          .then(res => res ? setIsStaked(true) : setIsStaked(false))
           .catch(err => setIsOwner(false))
       }
     }
@@ -279,13 +279,13 @@ export default function Space() {
           {getPrice()} DAI
         </Typography>
         {
-          isOwner ?
+          isOwner || isStaked ?
             <section className={classes.spaceDetails}>
               <Typography component="h2">Space Details</Typography>
               <Typography component="h4">Token ID</Typography>
               <Typography component="h3">{hexTokenId}</Typography>
               <Typography component="h4">Status</Typography>
-              <Chipset status="unstaked" />
+              <Chipset status={isStaked ? "staked" : "unstaked"} />
               <span className={classes.spaceOwnerOptions}>
                 <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => depositSpace()}>
                   Stake Space
