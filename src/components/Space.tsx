@@ -287,10 +287,10 @@ export default function Space() {
               <Typography component="h4">Status</Typography>
               <Chipset status={isStaked ? "staked" : "unstaked"} />
               <span className={classes.spaceOwnerOptions}>
-                <Button variant="contained" color="primary" className={classes.primaryButton} onClick={() => depositSpace()}>
-                  Stake Space
+                <Button variant="contained" color="primary" className={classes.primaryButton} disabled={isStaked} onClick={() => depositSpace()}>
+                  {isStaked ? "Withdraw Space" : "Stake Space"}
                 </Button>
-                <Button variant="outlined" color="primary" className={classes.secondaryButton} onClick={() => sellSpace()}>
+                <Button variant="outlined" color="primary" className={classes.secondaryButton} disabled={isStaked} onClick={() => sellSpace()}>
                   Sell Space
                 </Button>
               </span>
