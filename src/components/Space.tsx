@@ -199,6 +199,21 @@ export default function Space() {
       ).catch(err => console.log("Fail get price", err))
   }
 
+  const approveRentAmount = async (duration: number) => {
+    // console.log("current", currentSupply)
+    etherService.price(currentSupply+1, callbackFn)
+      // Then approve
+      .then(price => {
+        console.log("Price: ", price)
+        const approveAmount = (duration * parseInt(price)) / 22525710;
+
+        etherService.approve(approveAmount, callbackFn)
+          .then(val => console.log("Success approve", val))
+          .catch(err => console.log("Fail approve", err))
+        }
+      ).catch(err => console.log("Fail get price", err))
+  }
+
   const sellSpace = async () => {
     etherService.sell(tokenId, callbackFn)
       .then(val => console.log("Success sell", val))
@@ -239,7 +254,10 @@ export default function Space() {
       .catch(err => console.log(err))
   }
 
-  const rentSpace = async (hexCode: string) => {
+  const rentSpace = async (hexCode: string, duration: number) => {
+    // Approve first
+    await approveRentAmount(duration);
+    // Then rent
     let cleanedHex = hexCode.substring(2);
     let tokenId = bigInt(keccak256(cleanedHex).toString('hex'), 16).toString();
     etherService.rent(tokenId, "random-uri", "187714", callbackFn)
