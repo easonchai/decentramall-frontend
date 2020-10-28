@@ -8,6 +8,9 @@ import { BrowserRouter } from "react-router-dom";
 import Space from "./components/Space";
 import Store from "./components/Store";
 import Home from "./components/Home";
+import Admin from './components/Admin';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 const THEME = createMuiTheme({
   typography: {
@@ -34,11 +37,16 @@ const THEME = createMuiTheme({
 ReactDOM.render(
   <MuiThemeProvider theme={THEME}>
     <BrowserRouter>
-      <Switch>
-        <Route path="/space" component={Space} />
-        <Route path="/store/:id" component={Store} />
-        <Route path="/" component={Home} />
-      </Switch>
+      <div style={{width:'85%', margin:'auto'}}>
+        <Header />
+        <Switch>
+          <Route path="/admin" component={Admin} />
+          <Route path="/space" component={Space} />
+          <Route path="/store/:id" component={Store} />
+          <Route path="/" component={Home} />
+        </Switch>
+        <Footer />
+      </div>
     </BrowserRouter>
   </MuiThemeProvider>,
   document.getElementById("root")
