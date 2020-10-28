@@ -207,7 +207,7 @@ export default function Space() {
         console.log("Price: ", price)
         const approveAmount = (duration * parseInt(price)) / 22525710;
 
-        etherService.approve(approveAmount, callbackFn)
+        etherService.approve(approveAmount.toString(), callbackFn)
           .then(val => console.log("Success approve", val))
           .catch(err => console.log("Fail approve", err))
         }
@@ -255,14 +255,17 @@ export default function Space() {
   }
 
   const rentSpace = async (hexCode: string, duration: number) => {
-    // Approve first
-    await approveRentAmount(duration);
-    // Then rent
     let cleanedHex = hexCode.substring(2);
-    let tokenId = bigInt(keccak256(cleanedHex).toString('hex'), 16).toString();
-    etherService.rent(tokenId, "random-uri", "187714", callbackFn)
+    let tokenId = bigInt(cleanedHex, 16).toString();
+    console.log(tokenId)
+    console.log(duration)
+    etherService.rent(tokenId, "random-uri", duration.toString(), callbackFn)
       .then(res => console.log("success rent: ", res))
-      .catch(err => console.log("fail rent: ", err))
+      .catch((err) => {
+        if(err.code === "UNPREDICTABLE_GAS_LIMIT"){
+          approveRentAmount(duration);
+        }
+      })
   }
 
   return (
@@ -326,7 +329,7 @@ export default function Space() {
                             <ButtonBase
                               focusRipple
                               key={id}
-                              onClick={() => rentSpace(id)}
+                              onClick={() => rentSpace(id, 187714)}
                               style={{width: '100%', minHeight: '100px'}}
                             >
                               <CardContent style={{width: '100%'}}>
