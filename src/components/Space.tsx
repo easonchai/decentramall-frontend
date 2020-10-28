@@ -136,7 +136,10 @@ export default function Space() {
 
       // Then check if this person already bought a SPACE token
       if(userAddress){
-        setHexTokenId(keccak256(userAddress).toString('hex'));
+        let hexId = keccak256(userAddress).toString('hex');
+        let id = bigInt(hexId, 16).toString();
+        setHexTokenId(hexId);
+        setTokenId(id);
 
         etherService.balanceOf(userAddress).then(
           balance => {
@@ -145,16 +148,16 @@ export default function Space() {
               etherService.tokenByIndex(userAddress, i.toString())
                 .then(token => {
                   if(token._hex.toString().substring(2) === hexTokenId){
-                    // console.log("Owner")
-                    let tokenId = bigInt(token._hex.toString().substring(2), 16).toString();
-                    setTokenId(tokenId);
+                    // console.log("Owner")                    
                     setIsOwner(true);
-
-
                   } 
                   else {
                     console.log("not owner")
                     setIsOwner(false);
+                    // Check if this is staked
+                    etherService.isStaked(id)
+                    .then(res => console.log(res))
+                    .catch(err => console.log(err))
                   }
                 })
             }
