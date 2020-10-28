@@ -240,6 +240,14 @@ export default function Space() {
       .catch(err => console.log(err))
   }
 
+  const rentSpace = async (hexCode: string) => {
+    let cleanedHex = hexCode.substring(2);
+    let tokenId = bigInt(keccak256(cleanedHex).toString('hex'), 16).toString();
+    etherService.rent(tokenId, "random-uri", "187714", callbackFn)
+      .then(res => console.log("success rent: ", res))
+      .catch(err => console.log("fail rent: ", err))
+  }
+
   return (
     <div>
         <Typography component="h1" className={classes.heading}>Current SPACE Price</Typography>
@@ -296,12 +304,12 @@ export default function Space() {
                     "There are no available spaces to rent!" :
                     spaceList.map(id => {
                       return(
-                        <Grid item xs={6} style={{padding: '3rem'}}>
+                        <Grid item xs={6} style={{padding: '3rem'}} key={id}>
                           <Card style={{minHeight: '100px', display: 'flex', alignItems: 'center'}}>
                             <ButtonBase
                               focusRipple
                               key={id}
-                              onClick={() => setSelected(id)}
+                              onClick={() => rentSpace(id)}
                               style={{width: '100%', minHeight: '100px'}}
                             >
                               <CardContent style={{width: '100%'}}>
